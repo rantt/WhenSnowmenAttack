@@ -136,8 +136,10 @@ Game.Play.prototype = {
     
     //Move toward player every this.intervalTime
     if ((this.game.time.now - this.nextStep) > 0) {
+      if (this.snowman.alive === true) {
        this.snowmanMoves(this.snowman); 
-       this.nextStep = this.game.time.now + this.stepInterval;
+      }
+      this.nextStep = this.game.time.now + this.stepInterval;
     }
 
     // // Toggle Music
