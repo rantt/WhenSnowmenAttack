@@ -49,6 +49,8 @@ Game.Load.prototype = {
     this.game.load.spritesheet('snowman', 'assets/images/LD31_phEnemy.png',64,64,25);
     this.game.load.spritesheet('snowball', 'assets/images/LD31_snowball.png',16, 16,25);
 
+    this.game.load.image('snowflakes', 'assets/images/LD31_phSnowflakes.png');
+
     // Music Track
     // this.game.load.audio('music','soundtrack.mp3');
 

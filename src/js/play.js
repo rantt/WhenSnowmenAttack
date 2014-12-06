@@ -65,6 +65,16 @@ Game.Play.prototype = {
     this.snowman.body.collideWorldBounds = true;
     this.snowman.health = 3;
 
+
+    //this.game.add.emitter(x,y,maxNumberOfParticles)
+    this.emitter = this.game.add.emitter(0, 0, 200);
+    this.emitter.makeParticles('snowflakes'); 
+    this.emitter.gravity = 0;
+    this.emitter.minParticleSpeed.setTo(-200, -200);
+    this.emitter.maxParticleSpeed.setTo(200, 200);
+    this.emitter.minRotation = 0
+    this.emitter.maxRotation = 40;
+
     // // Music
     // this.music = this.game.add.sound('music');
     // this.music.volume = 0.5;
@@ -84,8 +94,21 @@ Game.Play.prototype = {
 
   snowballHitSnowman: function(snowman,snowball) {
     snowman.damage(1);
+
     snowball.kill();
+
     console.log('snowman hp',snowman.hp);
+
+    if (snowman.alive === false) {
+      // this.emitter.start(explode, lifespan, frequency, quantity, forceQuantity)
+      this.emitter.x = snowball.x;
+      this.emitter.y = snowball.y;
+      this.emitter.start(true, 500, null, 200);
+    }else {
+      this.emitter.x = snowball.x;
+      this.emitter.y = snowball.y;
+      this.emitter.start(true, 100, null, 10);
+    }
 
     // snowman.tint = 0xff0000;
     // snowball.tint = 0xffff00;
