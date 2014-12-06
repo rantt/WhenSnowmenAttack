@@ -25,9 +25,6 @@ Game.Play = function(game) {
 
 Game.Play.prototype = {
   create: function() {
-    // this.game.physics.startSystem(Phaser.Physics.P2JS);
-    // this.game.physics.p2.setBoundsToWorld(true, true, true, true, false);
-    // this.game.world.setBounds(0, 0 ,Game.w ,Game.h);
     this.game.physics.startSystem(Phaser.ARCADE);
 
     this.map = this.game.add.tilemap('woods');
@@ -55,7 +52,6 @@ Game.Play.prototype = {
     this.snowballs.setAll('anchor.y', 0.5);
     this.snowballs.setAll('outOfBoundsKill', true);
     this.snowballs.setAll('checkWorldBounds', true);
-    // this.snowballs.animations.add('throw',[0,1,3],true);
     this.snowballs.callAll('animations.add', 'animations', 'throw', [0,1,2], 30, true, false);
 
 
