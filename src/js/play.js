@@ -5,10 +5,10 @@
  * Using Math.round() will give you a non-uniform distribution!
  */
 
-// // Choose Random integer in a range
-// function rand (min, max) {
-//     return Math.floor(Math.random() * (max - min + 1)) + min;
-// }
+// Choose Random integer in a range
+function rand (min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 // var musicOn = true;
 
@@ -27,6 +27,8 @@ Game.Play.prototype = {
   create: function() {
     this.game.physics.startSystem(Phaser.ARCADE);
 
+    this.stepInterval = 1000;
+
     this.map = this.game.add.tilemap('woods');
     this.map.addTilesetImage('woods');
     this.layer1 = this.map.createLayer('layer1');
@@ -44,6 +46,7 @@ Game.Play.prototype = {
     this.player.throwing = false;
 
 
+    //player snowballs
     this.snowballs = this.game.add.group();
     this.snowballs.enableBody = true;
     this.snowballs.physicsBodyType = Phaser.Physics.ARCADE;
@@ -52,7 +55,18 @@ Game.Play.prototype = {
     this.snowballs.setAll('anchor.y', 0.5);
     this.snowballs.setAll('outOfBoundsKill', true);
     this.snowballs.setAll('checkWorldBounds', true);
-    this.snowballs.callAll('animations.add', 'animations', 'throw', [0,1,2], 30, true, false);
+    // this.snowballs.callAll('animations.add', 'animations', 'throw', [0,1,2], 30, true, false);
+
+
+    this.snowman = this.game.add.sprite(700, rand(0,6)+120, 'snowman',5);
+    this.snowman.animations.add('walk', [5,6],1,true);
+    this.snowman.anchor.setTo(0.5,0.5);
+    // this.snowman.physicsBodyType = Phaser.Physics.ARCADE;
+    this.game.physics.enable(this.snowman, Phaser.Physics.ARCADE);
+    this.snowman.body.immovable = false;
+    this.snowman.body.collideWorldBounds = true;
+    this.snowman.hp = 3;
+    // this.snowman.animations.play('walk');
 
 
     // // Music
@@ -72,7 +86,24 @@ Game.Play.prototype = {
 
   },
 
+  snowballHitSnowman: function(snowman,snowball) {
+    snowman.hp -= 1;
+    snowball.kill();
+    console.log('snowman hp',snowman.hp);
+
+    if (snowman.hp < 1) {
+      this.snowman.alive = false;
+      this.snowman.kill();
+    }
+    // snowman.tint = 0xff0000;
+    // snowball.tint = 0xffff00;
+
+    console.log('Ouch!!',snowball);
+  },
   update: function() {
+
+    this.game.physics.arcade.overlap(this.snowballs, this.snowman, this.snowballHitSnowman, null, this);
+
 
     if (wKey.isDown || this.cursors.up.isDown) {
       if ((this.player.posUpdate === false) && (this.player.y !== 120)) {
@@ -121,8 +152,10 @@ Game.Play.prototype = {
   //     this.music.volume = 0.5;
   //   }
   // },
-  // render: function() {
-  //   game.debug.text('Health: ' + tri.health, 32, 96);
-  // }
+  render: function() {
+    // this.game.debug.spriteInfo(this.snowman, 64,64);
+    // this.game.debug.spriteInfo(this.snowballs, 64,64);
+  }
+
 
 };
