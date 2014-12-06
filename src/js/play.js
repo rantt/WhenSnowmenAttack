@@ -12,7 +12,6 @@ function rand (min, max) {
 
 // var musicOn = true;
 
-
 var wKey;
 var aKey;
 var sKey;
@@ -28,6 +27,7 @@ Game.Play.prototype = {
     this.game.physics.startSystem(Phaser.ARCADE);
 
     this.stepInterval = 1000;
+    this.nextStep = this.game.time.now + this.stepInterval;
 
     this.map = this.game.add.tilemap('woods');
     this.map.addTilesetImage('woods');
@@ -37,7 +37,7 @@ Game.Play.prototype = {
     this.layer2.resizeWorld();
     
 
-    this.player = this.game.add.sprite(64, 120, 'player');
+    this.player = this.game.add.sprite(96, 128, 'player');
     this.player.anchor.setTo(0.5,0.5);
     this.player.animations.add('walk',[0,1],3,true);
     this.player.animations.add('throw', [2,3],20);
@@ -55,19 +55,15 @@ Game.Play.prototype = {
     this.snowballs.setAll('anchor.y', 0.5);
     this.snowballs.setAll('outOfBoundsKill', true);
     this.snowballs.setAll('checkWorldBounds', true);
-    // this.snowballs.callAll('animations.add', 'animations', 'throw', [0,1,2], 30, true, false);
 
 
-    this.snowman = this.game.add.sprite(700, rand(0,6)+120, 'snowman',5);
-    this.snowman.animations.add('walk', [5,6],1,true);
+    this.snowman = this.game.add.sprite(700, (64*rand(0,7))+128, 'snowman',5);
+    this.snowman.animations.add('walk', [6,5],3);
     this.snowman.anchor.setTo(0.5,0.5);
-    // this.snowman.physicsBodyType = Phaser.Physics.ARCADE;
     this.game.physics.enable(this.snowman, Phaser.Physics.ARCADE);
     this.snowman.body.immovable = false;
     this.snowman.body.collideWorldBounds = true;
-    this.snowman.hp = 3;
-    // this.snowman.animations.play('walk');
-
+    this.snowman.health = 3;
 
     // // Music
     // this.music = this.game.add.sound('music');
@@ -87,32 +83,24 @@ Game.Play.prototype = {
   },
 
   snowballHitSnowman: function(snowman,snowball) {
-    snowman.hp -= 1;
+    snowman.damage(1);
     snowball.kill();
     console.log('snowman hp',snowman.hp);
 
-    if (snowman.hp < 1) {
-      this.snowman.alive = false;
-      this.snowman.kill();
-    }
     // snowman.tint = 0xff0000;
     // snowball.tint = 0xffff00;
 
     console.log('Ouch!!',snowball);
   },
-  update: function() {
-
-    this.game.physics.arcade.overlap(this.snowballs, this.snowman, this.snowballHitSnowman, null, this);
-
-
+  playerActions: function() {
     if (wKey.isDown || this.cursors.up.isDown) {
-      if ((this.player.posUpdate === false) && (this.player.y !== 120)) {
+      if ((this.player.posUpdate === false) && (this.player.y !== 128)) {
         this.player.y -= 64;
         this.player.posUpdate = true;
         console.log('player y',this.player.y);
       }
     } else if(sKey.isDown || this.cursors.down.isDown) {
-      if ((this.player.posUpdate === false) && (this.player.y !== 568)) {
+      if ((this.player.posUpdate === false) && (this.player.y !== 576)) {
         this.player.y += 64;
         this.player.posUpdate = true;
         console.log('player y',this.player.y);
@@ -136,12 +124,40 @@ Game.Play.prototype = {
       this.player.throwing = false;
       this.player.animations.play('walk');
     }
+  },  
+  update: function() {
+    //Collisions
+    this.game.physics.arcade.overlap(this.snowballs, this.snowman, this.snowballHitSnowman, null, this);
 
-    // this.snowballs.callAll('play', null, 'throw');
+
+    this.playerActions();
+
+    //Snowman Movements
+    
+    //Move toward player every this.intervalTime
+    if ((this.game.time.now - this.nextStep) > 0) {
+       this.snowmanMoves(this.snowman); 
+       this.nextStep = this.game.time.now + this.stepInterval;
+    }
 
     // // Toggle Music
     // muteKey.onDown.add(this.toggleMute, this);
 
+  },
+  snowmanMoves:  function(snowman) {
+    if (this.moving) {
+      return;
+    }
+    this.moving = true;
+    console.log('snoman xpos',snowman.x);
+
+    snowman.play('walk');
+    var t = this.game.add.tween(snowman).to({x: snowman.x-64},100);
+    t.start();
+    t.onComplete.add(function() {
+      this.moving = false;
+    },this);
+    
   },
   // toggleMute: function() {
   //   if (musicOn == true) {
