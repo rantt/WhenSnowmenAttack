@@ -48,10 +48,10 @@ Game.Load.prototype = {
     this.game.load.tilemap('woods', 'assets/maps/woods.json', null, Phaser.Tilemap.TILED_JSON);
     this.game.load.spritesheet('woods', 'assets/images/LD31_woods.png', tileSize, tileSize, 25);
     this.game.load.spritesheet('player', 'assets/images/LD31_player.png',78,78,25);
-    this.game.load.spritesheet('snowman', 'assets/images/LD31_phEnemy.png',64,64,25);
+    this.game.load.spritesheet('snowman', 'assets/images/LD31_snowman.png',64,64,25);
     this.game.load.spritesheet('snowball', 'assets/images/LD31_snowball.png',16, 16,25);
 
-    this.game.load.image('snowflakes', 'assets/images/LD31_phSnowflakes.png');
+    this.game.load.spritesheet('snowflakes', 'assets/images/LD31_snowflakes.png',16, 16,25);
 
     // Sound FX
     this.game.load.audio('hit', 'assets/audio/hit.wav');

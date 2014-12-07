@@ -120,7 +120,8 @@ Game.Play.prototype = {
 
     //this.game.add.emitter(x,y,maxNumberOfParticles)
     this.emitter = this.game.add.emitter(0, 0, 200);
-    this.emitter.makeParticles('snowflakes'); 
+    // this.emitter.makeParticles('snowflakes'); 
+    this.emitter.makeParticles('snowflakes',[0,1,2,3,4]); 
     this.emitter.gravity = 0;
     this.emitter.minParticleSpeed.setTo(-200, -200);
     this.emitter.maxParticleSpeed.setTo(200, 200);
@@ -155,7 +156,7 @@ Game.Play.prototype = {
       this.deadSnd.play();
       this.emitter.x = snowball.x;
       this.emitter.y = snowball.y;
-      this.emitter.start(true, 500, null, 200);
+      this.emitter.start(true, 1000, null, 200);
     }else {
       this.hitSnd.play();
       this.emitter.x = snowball.x;
@@ -241,7 +242,7 @@ Game.Play.prototype = {
      
     }
 
-    console.log('waiting',this.ready,'count',this.snowmanCount);
+    // console.log('waiting',this.ready,'count',this.snowmanCount);
     if ((this.ready === true) && (this.snowmanCount === 0)) {
         this.ready = false;
         this.wavePosition = 0;
