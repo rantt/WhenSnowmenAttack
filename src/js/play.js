@@ -18,6 +18,11 @@ var sKey;
 var dKey;
 var spaceKey;
 
+var snowmen = [];
+var snowmenAlive = 0;
+var snowmenTotal = 3;
+var snowmenMax = 3;
+
 Game.Play = function(game) {
   this.game = game;
 };
@@ -27,6 +32,7 @@ Game.Play.prototype = {
     this.game.physics.startSystem(Phaser.ARCADE);
 
     this.stepInterval = 1000;
+
     this.nextStep = this.game.time.now + this.stepInterval;
 
     this.map = this.game.add.tilemap('woods');
@@ -56,14 +62,27 @@ Game.Play.prototype = {
     this.snowballs.setAll('outOfBoundsKill', true);
     this.snowballs.setAll('checkWorldBounds', true);
 
+    var positions = [];
+    for (var i = 0; i < 8;i++) {
 
-    this.snowman = this.game.add.sprite(700, (64*rand(0,7))+128, 'snowman',5);
-    this.snowman.animations.add('walk', [6,5],3);
-    this.snowman.anchor.setTo(0.5,0.5);
-    this.game.physics.enable(this.snowman, Phaser.Physics.ARCADE);
-    this.snowman.body.immovable = false;
-    this.snowman.body.collideWorldBounds = true;
-    this.snowman.health = 3;
+      positions.push(i);
+    }
+    
+    for (var i = 0; i < snowmenTotal; i++) {
+      
+      // var snowman = this.game.add.sprite(700, (64*rand(0,7))+128, 'snowman',5);
+      var snowman = this.game.add.sprite(700, (64*positions.splice(Math.floor(Math.random() * positions.length),1))+128, 'snowman',5);
+      snowman.animations.add('walk', [6,5],3);
+      snowman.anchor.setTo(0.5,0.5);
+      this.game.physics.enable(snowman, Phaser.Physics.ARCADE);
+      snowman.body.immovable = false;
+      snowman.body.collideWorldBounds = true;
+      snowman.health = 3;
+      // snowman.alive = true;
+      // console.log(snowman.x,snowman.y);
+
+      snowmen.push(snowman); 
+    }
 
 
     //this.game.add.emitter(x,y,maxNumberOfParticles)
@@ -97,7 +116,7 @@ Game.Play.prototype = {
 
     snowball.kill();
 
-    console.log('snowman hp',snowman.hp);
+    // console.log('snowman hp',snowman.hp);
 
     if (snowman.alive === false) {
       // this.emitter.start(explode, lifespan, frequency, quantity, forceQuantity)
@@ -150,7 +169,8 @@ Game.Play.prototype = {
   },  
   update: function() {
     //Collisions
-    this.game.physics.arcade.overlap(this.snowballs, this.snowman, this.snowballHitSnowman, null, this);
+    // this.game.physics.arcade.overlap(this.snowballs, this.snowman, this.snowballHitSnowman, null, this);
+    
 
 
     this.playerActions();
@@ -159,8 +179,14 @@ Game.Play.prototype = {
     
     //Move toward player every this.intervalTime
     if ((this.game.time.now - this.nextStep) > 0) {
-      if (this.snowman.alive === true) {
-       this.snowmanMoves(this.snowman); 
+      // console.log(snowmen.length);
+      for (var i = 0; i < snowmen.length; i++) {
+        if (snowmen[i].alive === true) {
+          console.log(i,'is alive');
+          // this.game.physics.arcade.overlap(this.snowballs, this.snowmen[i], this.dd 
+          this.snowmanMoves(snowmen[i]); 
+          this.game.physics.arcade.overlap(this.snowballs, snowmen[i], this.snowballHitSnowman, null, this);
+        }
       }
       this.nextStep = this.game.time.now + this.stepInterval;
     }
@@ -170,10 +196,10 @@ Game.Play.prototype = {
 
   },
   snowmanMoves:  function(snowman) {
-    if (this.moving) {
-      return;
-    }
-    this.moving = true;
+    // if (this.moving) {
+    //   return;
+    // }
+    // this.moving = true;
     console.log('snoman xpos',snowman.x);
 
     snowman.play('walk');
