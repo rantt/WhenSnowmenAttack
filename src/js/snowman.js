@@ -33,7 +33,7 @@ Snowman.prototype = Object.create(Phaser.Sprite.prototype);
 Snowman.prototype.throwSnowball = function(player) {
   var snowball = this.snowballs.getFirstDead();
   snowball.reset(this.x, this.y);
-  snowball.rotation = this.game.physics.arcade.moveToObject(snowball, player, 500);
+  snowball.rotation = this.game.physics.arcade.moveToObject(snowball, player, 300);
 };
 Snowman.prototype.dead = function() {
   // Blue snowflakes plus bright yellow for a nice shade of green
