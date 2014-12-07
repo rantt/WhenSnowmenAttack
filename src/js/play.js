@@ -18,7 +18,7 @@ var sKey;
 var dKey;
 var spaceKey;
 
-var snowmen = [];
+// var snowmen = [];
 var snowmenAlive = 0;
 var snowmenTotal = 3;
 var snowmenMax = 3;
@@ -62,6 +62,9 @@ Game.Play.prototype = {
     this.snowballs.setAll('outOfBoundsKill', true);
     this.snowballs.setAll('checkWorldBounds', true);
 
+
+    this.snowmen = this.game.add.group();
+
     var positions = [];
     for (var i = 0; i < 8;i++) {
 
@@ -81,7 +84,8 @@ Game.Play.prototype = {
       // snowman.alive = true;
       // console.log(snowman.x,snowman.y);
 
-      snowmen.push(snowman); 
+      // snowmen.push(snowman); 
+      this.snowmen.add(snowman);
     }
 
 
@@ -178,18 +182,21 @@ Game.Play.prototype = {
     //Snowman Movements
     
     //Move toward player every this.intervalTime
-    if ((this.game.time.now - this.nextStep) > 0) {
-      // console.log(snowmen.length);
-      for (var i = 0; i < snowmen.length; i++) {
-        if (snowmen[i].alive === true) {
-          console.log(i,'is alive');
-          // this.game.physics.arcade.overlap(this.snowballs, this.snowmen[i], this.dd 
-          this.snowmanMoves(snowmen[i]); 
-          this.game.physics.arcade.overlap(this.snowballs, snowmen[i], this.snowballHitSnowman, null, this);
+    this.snowmen.forEach(function(s) {
+      if ((this.game.time.now - this.nextStep) > 0) {
+        if (s.alive === true) {
+          //Move to player unless you're dead, in that case you can sit this one out :p
+          this.snowmanMoves(s);
         }
       }
+      //Did the Snowball hit the Snowman?...I hope so
+      this.game.physics.arcade.overlap(this.snowballs, s, this.snowballHitSnowman, null, this);
+    }, this); 
+
+    if ((this.game.time.now - this.nextStep) > 0) {
       this.nextStep = this.game.time.now + this.stepInterval;
     }
+
 
     // // Toggle Music
     // muteKey.onDown.add(this.toggleMute, this);
@@ -200,14 +207,14 @@ Game.Play.prototype = {
     //   return;
     // }
     // this.moving = true;
-    console.log('snoman xpos',snowman.x);
+    console.log('snowman xpos',snowman.x);
 
     snowman.play('walk');
     var t = this.game.add.tween(snowman).to({x: snowman.x-64},100);
     t.start();
-    t.onComplete.add(function() {
-      this.moving = false;
-    },this);
+    // t.onComplete.add(function() {
+    //   this.moving = false;
+    // },this);
     
   },
   // toggleMute: function() {
