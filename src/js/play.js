@@ -23,11 +23,15 @@ Game.Play = function(game) {
 Game.Play.prototype = {
   create: function() {
     this.game.physics.startSystem(Phaser.ARCADE);
+    this.game.stage.backgroundColor = '#000';
 
     //Initialize Steps
     // this.stepInterval = 1000;
     this.stepInterval = 1500;
     this.nextStep = this.game.time.now + this.stepInterval;
+
+    this.topY = 128;
+    this.bottomY = 384; 
     
     //Add SFX
     this.hitSnd = this.game.add.sound('hit');
@@ -45,7 +49,8 @@ Game.Play.prototype = {
     this.layer2.resizeWorld();
     
 
-    this.player = this.game.add.sprite(96, 128, 'player');
+    // this.player = this.game.add.sprite(96, 128, 'player');
+    this.player = this.game.add.sprite(96, this.topY, 'player');
     this.player.anchor.setTo(0.5,0.5);
     this.player.animations.add('walk',[0,1],3,true);
     this.player.animations.add('throw', [2,3],20);
@@ -119,10 +124,10 @@ Game.Play.prototype = {
                    [1,0,0,0],
                    [1,0,0,0],
                    [2,0,2,0],
-                   [0,0,0,0],
-                   [2,0,2,0],
-                   [0,0,0,0],
-                   [0,0,0,2]
+                   [0,0,0,0]
+                   // [2,0,2,0],
+                   // [0,0,0,0],
+                   // [0,0,0,2]
                  ];
 
 
@@ -172,13 +177,13 @@ Game.Play.prototype = {
   },
   playerActions: function() {
     if (wKey.isDown || this.cursors.up.isDown) {
-      if ((this.player.posUpdate === false) && (this.player.y !== 128)) {
+      if ((this.player.posUpdate === false) && (this.player.y !== this.topY)) {
         this.player.y -= 64;
         this.player.posUpdate = true;
         console.log('player y',this.player.y);
       }
     } else if(sKey.isDown || this.cursors.down.isDown) {
-      if ((this.player.posUpdate === false) && (this.player.y !== 576)) {
+      if ((this.player.posUpdate === false) && (this.player.y !== this.bottomY)) {
         this.player.y += 64;
         this.player.posUpdate = true;
         console.log('player y',this.player.y);
@@ -271,7 +276,8 @@ Game.Play.prototype = {
       }
     }
     var line = '';
-    for(var j=0;j < 8;j++) {
+    // for(var j=0;j < 8;j++) {
+    for(var j=0;j < 5;j++) {
       line += String(wave[j][this.wavePosition]);
 
       if (wave[j][this.wavePosition] !== 0) {
@@ -279,7 +285,7 @@ Game.Play.prototype = {
         // 736 last block
         // 800 Just Off Screen
         // this.snowmen.add(new Snowman(this.game, 736, (64*j)+128) ); 
-        this.snowmen.add(new Snowman(this.game, 800, (64*j)+128, wave[j][this.wavePosition], snowmanSnowballs )); 
+        this.snowmen.add(new Snowman(this.game, 800, (64*j)+this.topY, wave[j][this.wavePosition], snowmanSnowballs )); 
         this.snowmanCount += 1;
       }
         
