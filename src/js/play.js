@@ -19,10 +19,6 @@ var sKey;
 var dKey;
 var spaceKey;
 
-// var snowmen = [];
-// var snowmenAlive = 0;
-// var snowmenTotal = 3;
-// var snowmenMax = 3;
 
 Game.Play = function(game) {
   this.game = game;
@@ -87,9 +83,6 @@ Game.Play.prototype = {
                  ];
                  // console.log(this.wave1[0][2]);
   
-    // Start Wave1
-
-
 
     //this.game.add.emitter(x,y,maxNumberOfParticles)
     this.emitter = this.game.add.emitter(0, 0, 200);
@@ -107,9 +100,9 @@ Game.Play.prototype = {
 
     //Setup WASD and extra keys
     wKey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
-    aKey = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
     sKey = this.game.input.keyboard.addKey(Phaser.Keyboard.S);
-    dKey = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
+    // aKey = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
+    // dKey = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
     spaceKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     // muteKey = game.input.keyboard.addKey(Phaser.Keyboard.M);
 
