@@ -26,8 +26,8 @@ Game.Play.prototype = {
     this.game.stage.backgroundColor = '#000';
 
     //Initialize Steps
-    // this.stepInterval = 1000;
-    this.stepInterval = 1500;
+    this.stepInterval = 1000;
+    // this.stepInterval = 1500;
     this.nextStep = this.game.time.now + this.stepInterval;
 
     this.topY = 128;
@@ -128,16 +128,20 @@ Game.Play.prototype = {
                    [1,0,0,0],
                    [2,0,2,0],
                    [0,0,0,0]
-                   // [2,0,2,0],
-                   // [0,0,0,0],
-                   // [0,0,0,2]
+                 ];
+    var wave5 = [  [0,0,0,0],
+                   [0,0,0,0],
+                   [1,0,0,0],
+                   [0,0,0,0],
+                   [0,0,0,0]
                  ];
 
 
     // this.waves.push(wave1);
     // this.waves.push(wave2);
     // this.waves.push(wave3);
-    this.waves.push(wave4);
+    // this.waves.push(wave4);
+    this.waves.push(wave5);
 
     console.log(this.waves);
     
@@ -316,14 +320,20 @@ Game.Play.prototype = {
     // console.log('snowman xpos',snowman.x);
     console.log('type',snowman.rank);
     snowman.play('walk');
+
+    //Keep moving forward to great victory!!!
     var t = this.game.add.tween(snowman).to({x: snowman.x-64},100);
     t.start();
-    if (snowman.rank === 2) {
-      t.onComplete.add(function() {
+    t.onComplete.add(function() {
+      if (snowman.x === this.player.x) {
+        snowman.suicide();
+        this.snowmanCount -= 1;
+      }else if(snowman.rank === 2) {
         snowman.throwSnowball(this.player);
         console.log('throw some shit');
-      },this);
-    }
+      }
+     },this);
+
   },
   // toggleMute: function() {
   //   if (musicOn == true) {

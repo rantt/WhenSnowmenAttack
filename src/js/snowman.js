@@ -35,6 +35,16 @@ Snowman.prototype.throwSnowball = function(player) {
   snowball.reset(this.x, this.y);
   snowball.rotation = this.game.physics.arcade.moveToObject(snowball, player, 300);
 };
+Snowman.prototype.suicide = function() {
+  // Blue snowflakes plus bright yellow for a nice shade of green
+  this.emitter.forEach(function(particle) {
+    particle.tint = 0xffff00;
+  });
+  this.emitter.x = this.x;
+  this.emitter.y = this.y;
+  this.emitter.start(true, 1000, null, 200);
+  this.kill();
+};
 Snowman.prototype.dead = function() {
   // Blue snowflakes plus bright yellow for a nice shade of green
   // this.emitter.forEach(function(particle) {
