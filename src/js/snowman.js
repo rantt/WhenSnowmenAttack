@@ -1,4 +1,3 @@
-/*global Game*/
 var Snowman = function(game, x, y) {
   Phaser.Sprite.call(this, game, x, y, 'snowman',5);
   this.anchor.setTo(0.5, 0.5);

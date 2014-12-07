@@ -7,9 +7,9 @@
  */
 
 // Choose Random integer in a range
-function rand (min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+// function rand (min, max) {
+//     return Math.floor(Math.random() * (max - min + 1)) + min;
+// }
 
 // var musicOn = true;
 
@@ -20,9 +20,9 @@ var dKey;
 var spaceKey;
 
 // var snowmen = [];
-var snowmenAlive = 0;
-var snowmenTotal = 3;
-var snowmenMax = 3;
+// var snowmenAlive = 0;
+// var snowmenTotal = 3;
+// var snowmenMax = 3;
 
 Game.Play = function(game) {
   this.game = game;
@@ -66,32 +66,20 @@ Game.Play.prototype = {
 
     this.snowmen = this.game.add.group();
 
-    var positions = [];
-    for (var i = 0; i < 8;i++) {
-
-      positions.push(i);
-    }
-    
-    for (var i = 0; i < snowmenTotal; i++) {
-     
-      // snowman = new Snowman(this.game, 700, (64*positions.splice(Math.floor(Math.random() * positions.length),1))+128); 
-
-      //Add to the Snowman club
-      // this.snowmen.add(snowman);
-      this.snowmen.add(new Snowman(this.game, 700, (64*positions.splice(Math.floor(Math.random() * positions.length),1))+128) ); 
-    }
-
     this.wavePosition = 0;
-    this.wave1 = [  [0, 0, 1],
-                    [0, 1, 0],
-                    [0, 0, 1],
-                    [0, 0, 1],
-                    [0, 0, 1],
-                    [0, 0, 1],
-                    [0, 0, 1],
-                    [0, 0, 1]
-                 ]
+    this.wave1 = [  [0,0,0,1],
+                    [0,0,0,0],
+                    [0,0,0,0],
+                    [0,1,0,0],
+                    [0,0,0,0],
+                    [0,0,0,0],
+                    [0,0,0,0],
+                    [0,0,0,1]
+                 ];
                  // console.log(this.wave1[0][2]);
+  
+    // Start Wave1
+
 
 
     //this.game.add.emitter(x,y,maxNumberOfParticles)
@@ -100,7 +88,7 @@ Game.Play.prototype = {
     this.emitter.gravity = 0;
     this.emitter.minParticleSpeed.setTo(-200, -200);
     this.emitter.maxParticleSpeed.setTo(200, 200);
-    this.emitter.minRotation = 0
+    this.emitter.minRotation = 0;
     this.emitter.maxRotation = 40;
 
     // // Music
@@ -196,25 +184,36 @@ Game.Play.prototype = {
     if ((this.game.time.now - this.nextStep) > 0) {
       this.nextStep = this.game.time.now + this.stepInterval;
       
-      // for(var i=0; i < this.wave1[0].length;i++) {
-
-        console.log(this.wavePosition);
-        var line = "";
-        for(var j=0;j < 8;j++) {
-          line += String(this.wave1[j][this.wavePosition]);
-        }
-        console.log(line);
-      // }
-      if (this.wavePosition < (this.wave1[0].length - 1)) {
-        this.wavePosition += 1;
-      }
+      //Advance Wave on clock interval step
+      this.loadNextWave();
 
     }
-
 
     // // Toggle Music
     // muteKey.onDown.add(this.toggleMute, this);
 
+  },
+  loadNextWave: function() {
+    // Exit if we've reached the end of the wave
+    if (this.wavePosition === (this.wave1[0].length)){
+      return;
+    }
+    var line = '';
+    for(var j=0;j < 8;j++) {
+      line += String(this.wave1[j][this.wavePosition]);
+
+      if (this.wave1[j][this.wavePosition] === 1) {
+        console.log('made a snowman at position', j);
+        this.snowmen.add(new Snowman(this.game, 700, (64*j)+128) ); 
+      }
+        
+    }
+    console.log(line);
+
+    //Update WavePosition
+    if (this.wavePosition < (this.wave1[0].length)) {
+      this.wavePosition += 1;
+    }
   },
   snowmanMoves:  function(snowman) {
     // console.log('snowman xpos',snowman.x);
