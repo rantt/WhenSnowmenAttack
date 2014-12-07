@@ -14,9 +14,9 @@
 // var musicOn = true;
 
 var wKey;
-var aKey;
 var sKey;
-var dKey;
+// var aKey;
+// var dKey;
 var spaceKey;
 
 
@@ -29,8 +29,8 @@ Game.Play.prototype = {
     this.game.physics.startSystem(Phaser.ARCADE);
 
     //Initialize Steps
-    this.stepInterval = 1000;
-    // this.stepInterval = 1500;
+    // this.stepInterval = 1000;
+    this.stepInterval = 1500;
     this.nextStep = this.game.time.now + this.stepInterval;
     
     //Add SFX
@@ -73,6 +73,11 @@ Game.Play.prototype = {
 
     this.wavePosition = 0;
     this.waveCount = 0;
+    this.waveTimer = this.game.time.now + 3000;
+    this.waveText = this.game.add.bitmapText(Game.w/2, Game.h/2,'minecraftia', '', 20);
+    this.snowmanCount = 0;
+    this.ready = false;
+
 
     this.waves = [];
 
@@ -94,9 +99,21 @@ Game.Play.prototype = {
                    [0,0,0,0],
                    [0,0,0,0]
                  ];
+    var wave3 = [  [1,0,0,0,1],
+                   [0,0,0,1,0],
+                   [0,0,1,0,0],
+                   [0,1,0,0,0],
+                   [0,1,0,0,0],
+                   [0,0,1,0,0],
+                   [0,0,0,1,0],
+                   [1,0,0,0,1]
+                 ];
+
 
     this.waves.push(wave1);
     this.waves.push(wave2);
+    this.waves.push(wave3);
+
     console.log(this.waves);
     
   
@@ -134,6 +151,7 @@ Game.Play.prototype = {
 
     if (snowman.alive === false) {
       // this.emitter.start(explode, lifespan, frequency, quantity, forceQuantity)
+      this.snowmanCount -= 1;
       this.deadSnd.play();
       this.emitter.x = snowball.x;
       this.emitter.y = snowball.y;
@@ -188,26 +206,52 @@ Game.Play.prototype = {
 
     this.playerActions();
 
-    //Snowman Movements
-    //Move toward player every this.intervalTime
-    this.snowmen.forEach(function(s) {
-      if ((this.game.time.now - this.nextStep) > 0) {
-        if (s.alive === true) {
-          //Move to player unless you're dead, in that case you can sit this one out :p
-          this.snowmanMoves(s);
-        }
-      }
-      //Did the Snowball hit the Snowman?...I hope so
-      this.game.physics.arcade.overlap(this.snowballs, s, this.snowballHitSnowman, null, this);
-    }, this); 
-
-    if ((this.game.time.now - this.nextStep) > 0) {
-      this.nextStep = this.game.time.now + this.stepInterval;
-      
-      //Advance Wave on clock interval step
-      this.loadNextWave();
-
+    //this.waveText.text = 'Incoming!';
+    if ((this.waveTimer - this.game.time.now) > 0) {
+      this.waveText.tint = 0xff0000;
+      this.waveText.text = 'Incoming';
+    }else {
+      this.waveText.text = '';
     }
+
+
+    if (this.waveTimer === 0) {
+      this.waveTimer = this.game.time.now+3000;
+    }else if (this.game.time.now > this.waveTimer) {
+       //Snowman Movements
+      //Move toward player every this.intervalTime
+      this.snowmen.forEach(function(s) {
+        if ((this.game.time.now - this.nextStep) > 0) {
+          if (s.alive === true) {
+            //Move to player unless you're dead, in that case you can sit this one out :p
+            this.snowmanMoves(s);
+          }
+        }
+        //Did the Snowball hit the Snowman?...I hope so
+        this.game.physics.arcade.overlap(this.snowballs, s, this.snowballHitSnowman, null, this);
+      }, this); 
+
+      if ((this.game.time.now - this.nextStep) > 0) {
+        this.nextStep = this.game.time.now + this.stepInterval;
+        
+        //Advance Wave on clock interval step
+        this.loadNextWave();
+
+      }
+     
+    }
+
+    console.log('waiting',this.ready,'count',this.snowmanCount);
+    if ((this.ready === true) && (this.snowmanCount === 0)) {
+        this.ready = false;
+        this.wavePosition = 0;
+        this.waveCount += 1;
+        this.waveTimer = 0;
+    } 
+
+    // if ((this.snowmanCount === 0) ) {
+    //   this.waveTimer = 0;
+    // }
 
     // // Toggle Music
     // muteKey.onDown.add(this.toggleMute, this);
@@ -217,9 +261,9 @@ Game.Play.prototype = {
     // Exit if we've reached the end of the wave
     var wave = this.waves[this.waveCount];
     if (this.wavePosition === (wave[0].length)){
+      //If there's a wave after this one
       if (this.waves[this.waveCount+1] !== undefined) {
-        this.wavePosition = 0;
-        this.waveCount += 1;
+        this.ready = true;
       }else {
         return;
       }
@@ -234,6 +278,7 @@ Game.Play.prototype = {
         // 800 Just Off Screen
         // this.snowmen.add(new Snowman(this.game, 736, (64*j)+128) ); 
         this.snowmen.add(new Snowman(this.game, 800, (64*j)+128) ); 
+        this.snowmanCount += 1;
       }
         
     }
