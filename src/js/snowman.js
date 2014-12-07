@@ -4,7 +4,7 @@ var Snowman = function(game, x, y) {
   this.animations.add('walk', [6,5], 3);
   game.physics.enable(this, Phaser.Physics.ARCADE);
   this.body.immovable = false;
-  this.body.collideWorldBounds = true;
+  // this.body.collideWorldBounds = true;
   this.health = 3;
 };
 

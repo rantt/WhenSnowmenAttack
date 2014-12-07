@@ -51,8 +51,14 @@ Game.Load.prototype = {
 
     this.game.load.image('snowflakes', 'assets/images/LD31_phSnowflakes.png');
 
+    // Sound FX
+    this.game.load.audio('hit', 'assets/audio/hit.wav');
+    this.game.load.audio('dead', 'assets/audio/dead.wav');
+    this.game.load.audio('throw', 'assets/audio/throw.wav');
+
     // Music Track
     // this.game.load.audio('music','soundtrack.mp3');
+
 
   },
   create: function() {

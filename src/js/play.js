@@ -32,9 +32,18 @@ Game.Play.prototype = {
   create: function() {
     this.game.physics.startSystem(Phaser.ARCADE);
 
+    //Initialize Steps
     this.stepInterval = 1000;
-
+    // this.stepInterval = 1500;
     this.nextStep = this.game.time.now + this.stepInterval;
+    
+    //Add SFX
+    this.hitSnd = this.game.add.sound('hit');
+    this.hitSnd.volume = 0.5;
+    this.deadSnd = this.game.add.sound('dead');
+    this.deadSnd.volume = 0.5;
+    this.throwSnd = this.game.add.sound('throw');
+    this.throwSnd.volume = 0.5;
 
     this.map = this.game.add.tilemap('woods');
     this.map.addTilesetImage('woods');
@@ -67,7 +76,7 @@ Game.Play.prototype = {
     this.snowmen = this.game.add.group();
 
     this.wavePosition = 0;
-    this.wave1 = [  [0,0,0,1],
+    this.wave1 = [  [1,0,0,1],
                     [0,0,0,0],
                     [0,0,0,0],
                     [0,1,0,0],
@@ -117,10 +126,12 @@ Game.Play.prototype = {
 
     if (snowman.alive === false) {
       // this.emitter.start(explode, lifespan, frequency, quantity, forceQuantity)
+      this.deadSnd.play();
       this.emitter.x = snowball.x;
       this.emitter.y = snowball.y;
       this.emitter.start(true, 500, null, 200);
     }else {
+      this.hitSnd.play();
       this.emitter.x = snowball.x;
       this.emitter.y = snowball.y;
       this.emitter.start(true, 100, null, 10);
@@ -151,6 +162,7 @@ Game.Play.prototype = {
     //Throw Snowball
     if (spaceKey.isDown) {
       if (this.player.throwing !== true) {
+        this.throwSnd.play();
         this.player.animations.play('throw');
         var snowball = this.snowballs.getFirstExists(false);
         snowball.reset(this.player.x, this.player.y);
@@ -204,7 +216,10 @@ Game.Play.prototype = {
 
       if (this.wave1[j][this.wavePosition] === 1) {
         console.log('made a snowman at position', j);
-        this.snowmen.add(new Snowman(this.game, 700, (64*j)+128) ); 
+        // 736 last block
+        // 800 Just Off Screen
+        // this.snowmen.add(new Snowman(this.game, 736, (64*j)+128) ); 
+        this.snowmen.add(new Snowman(this.game, 800, (64*j)+128) ); 
       }
         
     }
@@ -216,8 +231,12 @@ Game.Play.prototype = {
     }
   },
   snowmanMoves:  function(snowman) {
-    // console.log('snowman xpos',snowman.x);
+    if (snowman.x < 0) {
+      snowman.kill();
+      return;
+    }
 
+    console.log('snowman xpos',snowman.x);
     snowman.play('walk');
     var t = this.game.add.tween(snowman).to({x: snowman.x-64},100);
     t.start();
