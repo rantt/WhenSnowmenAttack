@@ -72,16 +72,33 @@ Game.Play.prototype = {
     this.snowmen = this.game.add.group();
 
     this.wavePosition = 0;
-    this.wave1 = [  [1,0,0,1],
-                    [0,0,0,0],
-                    [0,0,0,0],
-                    [0,1,0,0],
-                    [0,0,0,0],
-                    [0,0,0,0],
-                    [0,0,0,0],
-                    [0,0,0,1]
+    this.waveCount = 0;
+
+    this.waves = [];
+
+    var wave1 = [  [1,0,0,1,0],
+                   [0,0,0,0,0],
+                   [0,0,0,0,0],
+                   [0,1,0,0,0],
+                   [0,0,0,0,0],
+                   [0,0,0,0,0],
+                   [0,0,0,0,0],
+                   [0,0,0,1,0]
                  ];
-                 // console.log(this.wave1[0][2]);
+    var wave2 = [  [0,0,0,0],
+                   [0,0,0,0],
+                   [0,1,0,1],
+                   [1,0,1,0],
+                   [0,1,0,1],
+                   [1,0,1,0],
+                   [0,0,0,0],
+                   [0,0,0,0]
+                 ];
+
+    this.waves.push(wave1);
+    this.waves.push(wave2);
+    console.log(this.waves);
+    
   
 
     //this.game.add.emitter(x,y,maxNumberOfParticles)
@@ -111,11 +128,9 @@ Game.Play.prototype = {
   },
 
   snowballHitSnowman: function(snowman,snowball) {
-    snowman.damage(1);
 
     snowball.kill();
-
-    // console.log('snowman hp',snowman.hp);
+    snowman.damage(1);
 
     if (snowman.alive === false) {
       // this.emitter.start(explode, lifespan, frequency, quantity, forceQuantity)
@@ -200,14 +215,20 @@ Game.Play.prototype = {
   },
   loadNextWave: function() {
     // Exit if we've reached the end of the wave
-    if (this.wavePosition === (this.wave1[0].length)){
-      return;
+    var wave = this.waves[this.waveCount];
+    if (this.wavePosition === (wave[0].length)){
+      if (this.waves[this.waveCount+1] !== undefined) {
+        this.wavePosition = 0;
+        this.waveCount += 1;
+      }else {
+        return;
+      }
     }
     var line = '';
     for(var j=0;j < 8;j++) {
-      line += String(this.wave1[j][this.wavePosition]);
+      line += String(wave[j][this.wavePosition]);
 
-      if (this.wave1[j][this.wavePosition] === 1) {
+      if (wave[j][this.wavePosition] === 1) {
         console.log('made a snowman at position', j);
         // 736 last block
         // 800 Just Off Screen
@@ -219,7 +240,7 @@ Game.Play.prototype = {
     console.log(line);
 
     //Update WavePosition
-    if (this.wavePosition < (this.wave1[0].length)) {
+    if (this.wavePosition < (wave.length)) {
       this.wavePosition += 1;
     }
   },
