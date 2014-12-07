@@ -117,14 +117,6 @@ Game.Play.prototype = {
     console.log(this.waves);
     
   
-
-    //this.game.add.emitter(x,y,maxNumberOfParticles)
-    this.emitter = this.game.add.emitter(0, 0, 200);
-    this.emitter.makeParticles('snowflakes',[0,1,2,3,4]); 
-    this.emitter.gravity = 0;
-    this.emitter.minParticleSpeed.setTo(-200, -200);
-    this.emitter.maxParticleSpeed.setTo(200, 200);
-
     // // Music
     // this.music = this.game.add.sound('music');
     // this.music.volume = 0.5;
@@ -148,7 +140,6 @@ Game.Play.prototype = {
     snowman.damage(1);
 
     if (snowman.alive === false) {
-      // this.emitter.start(explode, lifespan, frequency, quantity, forceQuantity)
       this.snowmanCount -= 1;
       this.deadSnd.play();
       snowman.dead();
