@@ -57,7 +57,10 @@ Game.Play.prototype = {
     this.game.physics.enable(this.player, Phaser.Physics.ARCADE);
     this.player.animations.play('walk');
     this.player.throwing = false;
+    this.player.health = 10;
 
+    this.playerHealthText = this.game.add.bitmapText(10, 512,'minecraftia','Life:',20);
+    this.playerHealthBar = this.game.add.sprite(100, 512, this.drawRect(260,20,'#33ff00'));
 
     //player snowballs
     this.snowballs = this.game.add.group();
@@ -155,7 +158,14 @@ Game.Play.prototype = {
     this.cursors = this.game.input.keyboard.createCursorKeys();
 
   },
-
+  drawRect: function(width, height,color) {
+    var bmd = this.game.add.bitmapData(width, height);
+    bmd.ctx.beginPath();
+    bmd.ctx.rect(0, 0, width, height);
+    bmd.ctx.fillStyle = color;
+    bmd.ctx.fill();
+    return bmd;
+  },
   snowballHitSnowman: function(snowman,snowball) {
 
     snowball.kill();
