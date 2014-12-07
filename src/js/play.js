@@ -13,6 +13,7 @@ var sKey;
 // var aKey;
 // var dKey;
 var spaceKey;
+var snowmanSnowballs;
 
 
 Game.Play = function(game) {
@@ -63,6 +64,16 @@ Game.Play.prototype = {
     this.snowballs.setAll('outOfBoundsKill', true);
     this.snowballs.setAll('checkWorldBounds', true);
 
+    //Snowman Snowballs
+    snowmanSnowballs = this.game.add.group();
+    snowmanSnowballs.enableBody = true;
+    snowmanSnowballs.physicsBodyType = Phaser.Physics.ARCADE;
+    snowmanSnowballs.createMultiple(100, 'snowball');
+    snowmanSnowballs.setAll('anchor.x', 0.5);
+    snowmanSnowballs.setAll('anchor.y', 0.5);
+    snowmanSnowballs.setAll('outOfBoundsKill', true);
+    snowmanSnowballs.setAll('checkWorldBounds', true);
+
 
     this.snowmen = this.game.add.group();
 
@@ -104,9 +115,9 @@ Game.Play.prototype = {
                    [1,0,0,0,1]
                  ];
 
-    var wave4 = [  [0,0,0,2],
-                   [0,0,0,0],
-                   [0,0,0,0],
+    var wave4 = [  [1,0,0,2],
+                   [1,0,0,0],
+                   [1,0,0,0],
                    [2,0,2,0],
                    [0,0,0,0],
                    [2,0,2,0],
@@ -268,7 +279,7 @@ Game.Play.prototype = {
         // 736 last block
         // 800 Just Off Screen
         // this.snowmen.add(new Snowman(this.game, 736, (64*j)+128) ); 
-        this.snowmen.add(new Snowman(this.game, 800, (64*j)+128, wave[j][this.wavePosition]) ); 
+        this.snowmen.add(new Snowman(this.game, 800, (64*j)+128, wave[j][this.wavePosition], snowmanSnowballs )); 
         this.snowmanCount += 1;
       }
         
@@ -286,10 +297,17 @@ Game.Play.prototype = {
       return;
     }
 
-    console.log('snowman xpos',snowman.x);
+    // console.log('snowman xpos',snowman.x);
+    console.log('type',snowman.rank);
     snowman.play('walk');
     var t = this.game.add.tween(snowman).to({x: snowman.x-64},100);
     t.start();
+    if (snowman.rank === 2) {
+      t.onComplete.add(function() {
+        snowman.throwSnowball(this.player);
+        console.log('throw some shit');
+      },this);
+    }
   },
   // toggleMute: function() {
   //   if (musicOn == true) {
