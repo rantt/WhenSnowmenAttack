@@ -6,11 +6,6 @@
  * Using Math.round() will give you a non-uniform distribution!
  */
 
-// Choose Random integer in a range
-// function rand (min, max) {
-//     return Math.floor(Math.random() * (max - min + 1)) + min;
-// }
-
 // var musicOn = true;
 
 var wKey;
@@ -109,10 +104,21 @@ Game.Play.prototype = {
                    [1,0,0,0,1]
                  ];
 
+    var wave4 = [  [0,0,0,2],
+                   [0,0,0,0],
+                   [0,0,0,0],
+                   [2,0,2,0],
+                   [0,0,0,0],
+                   [2,0,2,0],
+                   [0,0,0,0],
+                   [0,0,0,2]
+                 ];
 
-    this.waves.push(wave1);
-    this.waves.push(wave2);
-    this.waves.push(wave3);
+
+    // this.waves.push(wave1);
+    // this.waves.push(wave2);
+    // this.waves.push(wave3);
+    this.waves.push(wave4);
 
     console.log(this.waves);
     
@@ -257,12 +263,12 @@ Game.Play.prototype = {
     for(var j=0;j < 8;j++) {
       line += String(wave[j][this.wavePosition]);
 
-      if (wave[j][this.wavePosition] === 1) {
+      if (wave[j][this.wavePosition] !== 0) {
         console.log('made a snowman at position', j);
         // 736 last block
         // 800 Just Off Screen
         // this.snowmen.add(new Snowman(this.game, 736, (64*j)+128) ); 
-        this.snowmen.add(new Snowman(this.game, 800, (64*j)+128) ); 
+        this.snowmen.add(new Snowman(this.game, 800, (64*j)+128, wave[j][this.wavePosition]) ); 
         this.snowmanCount += 1;
       }
         

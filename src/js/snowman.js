@@ -1,8 +1,19 @@
-var Snowman = function(game, x, y) {
+var Snowman = function(game, x, y, type) {
   this.game = game;
-  Phaser.Sprite.call(this, this.game, x, y, 'snowman');
+  this.type = type;
+
+
+  if (this.type === 1) {
+    Phaser.Sprite.call(this, this.game, x, y, 'snowman');
+    this.animations.add('walk', [1,0], 3);
+  }else if (this.type === 2) {
+    Phaser.Sprite.call(this, this.game, x, y, 'snowman',2);
+    this.animations.add('walk', [3,4,2], 3);
+  }
+
   this.anchor.setTo(0.5, 0.5);
-  this.animations.add('walk', [1,0], 3);
+    
+
   this.game.physics.enable(this, Phaser.Physics.ARCADE);
   this.body.immovable = false;
   // this.body.collideWorldBounds = true;
