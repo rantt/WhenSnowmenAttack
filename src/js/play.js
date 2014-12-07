@@ -1,4 +1,5 @@
 /*global Game*/
+/*global Snowman*/
 
 /**
  * Returns a random integer between min and max
@@ -73,18 +74,11 @@ Game.Play.prototype = {
     
     for (var i = 0; i < snowmenTotal; i++) {
      
-      // Picks a positions from the positions array and removes
-      // it so the next snowman can't takethat position
-      var snowman = this.game.add.sprite(700, (64*positions.splice(Math.floor(Math.random() * positions.length),1))+128, 'snowman',5);
-      snowman.animations.add('walk', [6,5],3);
-      snowman.anchor.setTo(0.5,0.5);
-      this.game.physics.enable(snowman, Phaser.Physics.ARCADE);
-      snowman.body.immovable = false;
-      snowman.body.collideWorldBounds = true;
-      snowman.health = 3;
+      // snowman = new Snowman(this.game, 700, (64*positions.splice(Math.floor(Math.random() * positions.length),1))+128); 
 
       //Add to the Snowman club
-      this.snowmen.add(snowman);
+      // this.snowmen.add(snowman);
+      this.snowmen.add(new Snowman(this.game, 700, (64*positions.splice(Math.floor(Math.random() * positions.length),1))+128) ); 
     }
 
     this.wavePosition = 0;
