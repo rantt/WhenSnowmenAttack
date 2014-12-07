@@ -120,13 +120,10 @@ Game.Play.prototype = {
 
     //this.game.add.emitter(x,y,maxNumberOfParticles)
     this.emitter = this.game.add.emitter(0, 0, 200);
-    // this.emitter.makeParticles('snowflakes'); 
     this.emitter.makeParticles('snowflakes',[0,1,2,3,4]); 
     this.emitter.gravity = 0;
     this.emitter.minParticleSpeed.setTo(-200, -200);
     this.emitter.maxParticleSpeed.setTo(200, 200);
-    this.emitter.minRotation = 0;
-    this.emitter.maxRotation = 40;
 
     // // Music
     // this.music = this.game.add.sound('music');
@@ -154,14 +151,10 @@ Game.Play.prototype = {
       // this.emitter.start(explode, lifespan, frequency, quantity, forceQuantity)
       this.snowmanCount -= 1;
       this.deadSnd.play();
-      this.emitter.x = snowball.x;
-      this.emitter.y = snowball.y;
-      this.emitter.start(true, 1000, null, 200);
+      snowman.dead();
     }else {
       this.hitSnd.play();
-      this.emitter.x = snowball.x;
-      this.emitter.y = snowball.y;
-      this.emitter.start(true, 100, null, 10);
+      snowman.hit();
     }
 
     // snowman.tint = 0xff0000;
@@ -194,8 +187,8 @@ Game.Play.prototype = {
         var snowball = this.snowballs.getFirstExists(false);
         snowball.reset(this.player.x, this.player.y);
         this.game.physics.arcade.moveToXY(snowball, this.player.x+600, this.player.y,700);
-        snowball.scale.x = 2;
-        snowball.scale.y = 2;
+        // snowball.scale.x = 1.5;
+        // snowball.scale.y = 1.5;
         this.player.throwing = true;
       }
     }else {
