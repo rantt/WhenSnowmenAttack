@@ -72,8 +72,9 @@ Game.Play.prototype = {
     }
     
     for (var i = 0; i < snowmenTotal; i++) {
-      
-      // var snowman = this.game.add.sprite(700, (64*rand(0,7))+128, 'snowman',5);
+     
+      // Picks a positions from the positions array and removes
+      // it so the next snowman can't takethat position
       var snowman = this.game.add.sprite(700, (64*positions.splice(Math.floor(Math.random() * positions.length),1))+128, 'snowman',5);
       snowman.animations.add('walk', [6,5],3);
       snowman.anchor.setTo(0.5,0.5);
@@ -81,12 +82,22 @@ Game.Play.prototype = {
       snowman.body.immovable = false;
       snowman.body.collideWorldBounds = true;
       snowman.health = 3;
-      // snowman.alive = true;
-      // console.log(snowman.x,snowman.y);
 
-      // snowmen.push(snowman); 
+      //Add to the Snowman club
       this.snowmen.add(snowman);
     }
+
+    this.wavePosition = 0;
+    this.wave1 = [  [0, 0, 1],
+                    [0, 1, 0],
+                    [0, 0, 1],
+                    [0, 0, 1],
+                    [0, 0, 1],
+                    [0, 0, 1],
+                    [0, 0, 1],
+                    [0, 0, 1]
+                 ]
+                 // console.log(this.wave1[0][2]);
 
 
     //this.game.add.emitter(x,y,maxNumberOfParticles)
@@ -172,15 +183,10 @@ Game.Play.prototype = {
     }
   },  
   update: function() {
-    //Collisions
-    // this.game.physics.arcade.overlap(this.snowballs, this.snowman, this.snowballHitSnowman, null, this);
-    
-
 
     this.playerActions();
 
     //Snowman Movements
-    
     //Move toward player every this.intervalTime
     this.snowmen.forEach(function(s) {
       if ((this.game.time.now - this.nextStep) > 0) {
@@ -195,6 +201,20 @@ Game.Play.prototype = {
 
     if ((this.game.time.now - this.nextStep) > 0) {
       this.nextStep = this.game.time.now + this.stepInterval;
+      
+      // for(var i=0; i < this.wave1[0].length;i++) {
+
+        console.log(this.wavePosition);
+        var line = "";
+        for(var j=0;j < 8;j++) {
+          line += String(this.wave1[j][this.wavePosition]);
+        }
+        console.log(line);
+      // }
+      if (this.wavePosition < (this.wave1[0].length - 1)) {
+        this.wavePosition += 1;
+      }
+
     }
 
 
@@ -203,19 +223,11 @@ Game.Play.prototype = {
 
   },
   snowmanMoves:  function(snowman) {
-    // if (this.moving) {
-    //   return;
-    // }
-    // this.moving = true;
-    console.log('snowman xpos',snowman.x);
+    // console.log('snowman xpos',snowman.x);
 
     snowman.play('walk');
     var t = this.game.add.tween(snowman).to({x: snowman.x-64},100);
     t.start();
-    // t.onComplete.add(function() {
-    //   this.moving = false;
-    // },this);
-    
   },
   // toggleMute: function() {
   //   if (musicOn == true) {
@@ -233,3 +245,5 @@ Game.Play.prototype = {
 
 
 };
+
+
