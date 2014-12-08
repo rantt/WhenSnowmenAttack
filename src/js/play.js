@@ -23,12 +23,12 @@ Game.Play = function(game) {
 Game.Play.prototype = {
   create: function() {
     this.game.physics.startSystem(Phaser.ARCADE);
-    this.game.stage.backgroundColor = '#000';
 
     //Initialize Steps
     this.stepInterval = 1000;
     // this.stepInterval = 1500;
     this.nextStep = this.game.time.now + this.stepInterval;
+    this.gameOver = false;
 
     this.topY = 128;
     this.bottomY = 384; 
@@ -40,6 +40,10 @@ Game.Play.prototype = {
     this.deadSnd.volume = 0.5;
     this.throwSnd = this.game.add.sound('throw');
     this.throwSnd.volume = 0.5;
+    this.playerHitSnd = this.game.add.sound('playerHit');
+    this.playerHitSnd.volume = 0.5;
+    this.playerDeadSnd = this.game.add.sound('playerDead');
+    this.playerDeadSnd.volume = 0.5;
 
     this.map = this.game.add.tilemap('woods');
     this.map.addTilesetImage('woods');
@@ -57,7 +61,9 @@ Game.Play.prototype = {
     this.game.physics.enable(this.player, Phaser.Physics.ARCADE);
     this.player.animations.play('walk');
     this.player.throwing = false;
-    this.player.health = 10;
+    this.player.health = 20;
+    this.player.maxHealth = 20;
+
 
     this.playerHealthText = this.game.add.bitmapText(10, 512,'minecraftia','Life:',20);
     this.playerHealthBar = this.game.add.sprite(100, 512, this.drawRect(260,20,'#33ff00'));
@@ -71,6 +77,7 @@ Game.Play.prototype = {
     this.snowballs.setAll('anchor.y', 0.5);
     this.snowballs.setAll('outOfBoundsKill', true);
     this.snowballs.setAll('checkWorldBounds', true);
+    this.snowballs.setAll('tint',0x00FFFF);
 
     //Snowman Snowballs
     snowmanSnowballs = this.game.add.group();
@@ -81,6 +88,8 @@ Game.Play.prototype = {
     snowmanSnowballs.setAll('anchor.y', 0.5);
     snowmanSnowballs.setAll('outOfBoundsKill', true);
     snowmanSnowballs.setAll('checkWorldBounds', true);
+    // snowmanSnowballs.setAll('tint',0xF0FFF0);
+    snowmanSnowballs.setAll('tint',0x98FB98);
 
 
     this.snowmen = this.game.add.group();
@@ -88,68 +97,99 @@ Game.Play.prototype = {
     this.wavePosition = 0;
     this.waveCount = 0;
     this.waveTimer = this.game.time.now + 3000;
-    this.waveText = this.game.add.bitmapText(Game.w/2, Game.h/2,'minecraftia', '', 20);
+    this.waveText = this.game.add.bitmapText(Game.w/2-140, Game.h/2,'minecraftia', '', 30);
     this.snowmanCount = 0;
     this.ready = false;
 
 
     this.waves = [];
 
-    var wave1 = [  [1,0,0,1,0],
-                   [0,0,0,0,0],
-                   [0,0,0,0,0],
-                   [0,1,0,0,0],
-                   [0,0,0,0,0],
-                   [0,0,0,0,0],
-                   [0,0,0,0,0],
-                   [0,0,0,1,0]
+    var wave1 = [  [0,0,0,0,0,0,1,0,0],
+                   [0,0,0,0,0,0,0,0,0],
+                   [1,0,0,0,1,0,0,0,0],
+                   [0,0,1,0,0,0,0,0,0],
+                   [0,0,0,0,0,0,0,0,1],
                  ];
-    var wave2 = [  [0,0,0,0],
-                   [0,0,0,0],
-                   [0,1,0,1],
+    var wave2 = [  [0,0,1,0,0,0,0],
+                   [0,0,1,0,1,0,0],
+                   [0,0,0,0,0,0,1],
+                   [1,0,0,0,1,0,0],
+                   [1,0,0,0,0,0,1]
+                 ];
+    var wave3 = [  [1,0,0,0,0,0,1,0,0],
+                   [1,0,0,0,1,0,1,0,0],
+                   [1,0,1,0,1,0,0,0,1],
+                   [0,0,1,0,0,0,0,0,1],
+                   [0,0,1,0,0,0,1,0,1]
+                 ];
+    var wave4 = [  [0,0,1,0],
+                   [0,1,1,0],
                    [1,0,1,0],
-                   [0,1,0,1],
-                   [1,0,1,0],
-                   [0,0,0,0],
-                   [0,0,0,0]
+                   [0,1,1,0],
+                   [0,0,1,0]
                  ];
-    var wave3 = [  [1,0,0,0,1],
-                   [0,0,0,1,0],
-                   [0,0,1,0,0],
-                   [0,1,0,0,0],
-                   [0,1,0,0,0],
-                   [0,0,1,0,0],
-                   [0,0,0,1,0],
-                   [1,0,0,0,1]
+    var wave5 = [  [0,0,0,0,0,0,0],
+                   [2,0,0,0,2,0,0],
+                   [0,0,2,0,0,0,0],
+                   [0,0,0,0,0,0,2],
+                   [0,0,0,0,0,0,0]
                  ];
 
-    var wave4 = [  [1,0,0,2],
-                   [1,0,0,0],
-                   [1,0,0,0],
-                   [2,0,2,0],
-                   [0,0,0,0]
+    var wave6 = [  [0,0,0,0,0,0,0,1],
+                   [0,0,0,0,1,0,2,0],
+                   [2,0,1,0,2,0,1,0],
+                   [0,0,0,0,1,0,2,0],
+                   [0,0,0,0,0,0,0,1]
                  ];
-    var wave5 = [  [0,0,0,0],
-                   [0,0,0,0],
-                   [1,0,0,0],
-                   [0,0,0,0],
-                   [0,0,0,0]
+
+    var wave7 = [  [0,0,0],
+                   [0,0,0],
+                   [0,3,0],
+                   [0,0,0],
+                   [0,0,0]
+                 ];
+
+    var wave8 = [  [2,0,0],
+                   [0,0,0],
+                   [0,3,0],
+                   [0,0,0],
+                   [2,0,0]
+                 ];
+
+    var wave9 = [  [0,0,0],
+                   [0,0,0],
+                   [0,4,0],
+                   [0,0,0],
+                   [0,0,0]
+                 ];
+
+    var wave10 = [  [0,0,0],
+                    [0,3,0],
+                    [0,0,0],
+                    [0,4,0],
+                    [0,0,0]
                  ];
 
 
-    // this.waves.push(wave1);
-    // this.waves.push(wave2);
-    // this.waves.push(wave3);
-    // this.waves.push(wave4);
+
+    this.waves.push(wave1);
+    this.waves.push(wave2);
+    this.waves.push(wave3);
+    this.waves.push(wave4);
     this.waves.push(wave5);
+    this.waves.push(wave6);
+    this.waves.push(wave7);
+    this.waves.push(wave8);
+    this.waves.push(wave9);
+    this.waves.push(wave10);
 
-    console.log(this.waves);
+    // console.log(this.waves);
     
   
     // // Music
-    // this.music = this.game.add.sound('music');
-    // this.music.volume = 0.5;
-    // this.music.play('',0,1,true);
+    this.music = this.game.add.sound('music');
+    this.music.volume = 0.4;
+    this.music.play('',0,1,true);
 
     //Setup WASD and extra keys
     wKey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
@@ -187,20 +227,22 @@ Game.Play.prototype = {
     // snowman.tint = 0xff0000;
     // snowball.tint = 0xffff00;
 
-    console.log('Ouch!!',snowball);
   },
   playerActions: function() {
+    if (this.player.alive === false) {
+      return;
+    }
     if (wKey.isDown || this.cursors.up.isDown) {
       if ((this.player.posUpdate === false) && (this.player.y !== this.topY)) {
         this.player.y -= 64;
         this.player.posUpdate = true;
-        console.log('player y',this.player.y);
+        // console.log('player y',this.player.y);
       }
     } else if(sKey.isDown || this.cursors.down.isDown) {
       if ((this.player.posUpdate === false) && (this.player.y !== this.bottomY)) {
         this.player.y += 64;
         this.player.posUpdate = true;
-        console.log('player y',this.player.y);
+        // console.log('player y',this.player.y);
       }
     } else {
      this.player.posUpdate = false; 
@@ -225,89 +267,117 @@ Game.Play.prototype = {
   },  
   update: function() {
 
-    this.playerActions();
+    if (this.player.alive === true) {
+      this.playerActions();
+      this.game.physics.arcade.overlap(snowmanSnowballs, this.player, this.snowballHitPlayer, null, this);
 
-    //this.waveText.text = 'Incoming!';
-    if ((this.waveTimer - this.game.time.now) > 0) {
-      this.waveText.tint = 0xff0000;
-      this.waveText.text = 'Incoming';
-    }else {
-      this.waveText.text = '';
-    }
-
-
-    if (this.waveTimer === 0) {
-      this.waveTimer = this.game.time.now+3000;
-    }else if (this.game.time.now > this.waveTimer) {
-       //Snowman Movements
-      //Move toward player every this.intervalTime
-      this.snowmen.forEach(function(s) {
-        if ((this.game.time.now - this.nextStep) > 0) {
-          if (s.alive === true) {
-            //Move to player unless you're dead, in that case you can sit this one out :p
-            this.snowmanMoves(s);
-          }
-        }
-        //Did the Snowball hit the Snowman?...I hope so
-        this.game.physics.arcade.overlap(this.snowballs, s, this.snowballHitSnowman, null, this);
-      }, this); 
-
-      if ((this.game.time.now - this.nextStep) > 0) {
-        this.nextStep = this.game.time.now + this.stepInterval;
-        
-        //Advance Wave on clock interval step
-        this.loadNextWave();
-
+      //this.waveText.text = 'Incoming!';
+      if ((this.waveTimer - this.game.time.now) > 0) {
+        this.waveText.tint = 0xffff00;
+        this.waveText.text = 'Incoming: Wave '+(this.waveCount + 1);
+      }else {
+        this.waveText.text = '';
       }
-     
-    }
 
-    // console.log('waiting',this.ready,'count',this.snowmanCount);
-    if ((this.ready === true) && (this.snowmanCount === 0)) {
-        this.ready = false;
-        this.wavePosition = 0;
-        this.waveCount += 1;
-        this.waveTimer = 0;
+
+      if (this.waveTimer === 0) {
+        this.waveTimer = this.game.time.now+3000;
+      }else if (this.game.time.now > this.waveTimer) {
+         //Snowman Movements
+        //Move toward player every this.intervalTime
+        this.snowmen.forEach(function(s) {
+          if ((this.game.time.now - this.nextStep) > 0) {
+            // this.game.physics.arcade.overlap(s.snowballs, this.player, this.playerHit(2), null, this);
+            if (s.alive === true) {
+              //Move to player unless you're dead, in that case you can sit this one out :p
+              this.snowmanMoves(s);
+            }
+          }
+          //Did the Snowball hit the Snowman?...I hope so
+          this.game.physics.arcade.overlap(this.snowballs, s, this.snowballHitSnowman, null, this);
+        }, this); 
+
+        if ((this.game.time.now - this.nextStep) > 0) {
+          this.nextStep = this.game.time.now + this.stepInterval;
+          
+          //Advance Wave on clock interval step
+          this.loadNextWave();
+
+        }
+      }
+
+      //If all the snowmen for this wave have made it to the screen
+      //and they are all dead.  Prepare for the next wave
+      if ((this.ready === true) && (this.snowmanCount === 0)) {
+          this.ready = false;
+          this.wavePosition = 0;
+          this.waveCount += 1;
+          this.waveTimer = 0;
+      }
+      if ((this.gameOver === true) && (this.snowmanCount === 0)) {
+        this.waveText.tint = 0x00ff00;
+        this.waveText.fontSize = 40;
+        this.waveText.text = 'YOU WIN!';
+
+        this.twitterButton = this.game.add.button(550, 550,'twitter', this.twitter, this);
+        this.twitterButton.fixedToCamera = true;
+      }
+    }else {
+      this.waveText.fontSize = 40;
+      this.waveText.text = 'You Died...How Terrible.';
     } 
-
-    // if ((this.snowmanCount === 0) ) {
-    //   this.waveTimer = 0;
-    // }
 
     // // Toggle Music
     // muteKey.onDown.add(this.toggleMute, this);
+
+  },
+  twitter: function() {
+    window.open('http://twitter.com/share?text=I+Survived+The+Snowpocalypse!+See+if+you+can!++at&via=rantt_&url=http://www.divideby5.com/games/WhenSnowmenAttack/', '_blank');
+  },
+
+  resetSprite: function(sprite) {
+    if(this.resurrecting) {
+      return;
+    }
+    this.resurrecting = true;
+    var t = this.game.add.tween(sprite).to({alpha: 1},2000);
+    t.start();
+    t.onComplete.add(function() {
+      this.resurrecting = false;
+    },this);
 
   },
   loadNextWave: function() {
     // Exit if we've reached the end of the wave
     var wave = this.waves[this.waveCount];
     if (this.wavePosition === (wave[0].length)){
-      //If there's a wave after this one
       if (this.waves[this.waveCount+1] !== undefined) {
         this.ready = true;
+        return;
       }else {
+        // console.log('game over');
+        this.gameOver = true;
         return;
       }
     }
-    var line = '';
-    // for(var j=0;j < 8;j++) {
     for(var j=0;j < 5;j++) {
-      line += String(wave[j][this.wavePosition]);
-
+      var line = '';
+      this.line += String(wave[j][this.wavePosition]);
       if (wave[j][this.wavePosition] !== 0) {
-        console.log('made a snowman at position', j);
         // 736 last block
         // 800 Just Off Screen
         // this.snowmen.add(new Snowman(this.game, 736, (64*j)+128) ); 
+        // console.log('iam a',wave[j][this.wavePosition],this.wavePosition);
         this.snowmen.add(new Snowman(this.game, 800, (64*j)+this.topY, wave[j][this.wavePosition], snowmanSnowballs )); 
         this.snowmanCount += 1;
       }
+      // console.log(line);
+      // console.log('size',wave.length);
         
     }
-    console.log(line);
 
     //Update WavePosition
-    if (this.wavePosition < (wave.length)) {
+    if (this.wavePosition < (wave[0].length)) {
       this.wavePosition += 1;
     }
   },
@@ -318,7 +388,7 @@ Game.Play.prototype = {
     }
 
     // console.log('snowman xpos',snowman.x);
-    console.log('type',snowman.rank);
+    // console.log('type',snowman.rank);
     snowman.play('walk');
 
     //Keep moving forward to great victory!!!
@@ -326,14 +396,42 @@ Game.Play.prototype = {
     t.start();
     t.onComplete.add(function() {
       if (snowman.x === this.player.x) {
+        this.deadSnd.play();
         snowman.suicide();
+        this.playerHit(2);
         this.snowmanCount -= 1;
-      }else if(snowman.rank === 2) {
-        snowman.throwSnowball(this.player);
-        console.log('throw some shit');
+      }else if((snowman.rank === 2) || (snowman.rank === 4)) {
+        // if (this.player.alive === true) {
+          snowman.throwSnowball(this.player);
+        // }
       }
      },this);
 
+  },
+  playerHit: function(dmg) {
+    this.player.health -= dmg;
+    if (this.player.health > 0) {
+      this.playerHitSnd.play();
+      this.playerHealthBar.scale.x = this.player.health/this.player.maxHealth;
+      var t =  this.game.add.tween(this.player).to({alpha: 0.3},100).to({alpha: 1},100);
+      t.start();
+    }else {
+      this.playerDeadSnd.play();
+      this.playerHealthBar.scale.x = 0;
+      this.player.animations.stop();
+      this.player.frame = 4;
+      this.player.alive = false;
+      var t = this.game.add.tween(this.player).to({alpha: 0}, 3000);
+      t.start();
+      t.onComplete.add(function() {
+        this.player.kill();
+        //Call End Of Game Function
+      }, this);
+    }
+  },
+  snowballHitPlayer: function(player, snowball) {
+    snowball.kill();
+    this.playerHit(2);
   },
   // toggleMute: function() {
   //   if (musicOn == true) {
