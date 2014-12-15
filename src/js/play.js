@@ -65,8 +65,8 @@ Game.Play.prototype = {
     this.player.maxHealth = 20;
 
 
-    this.playerHealthText = this.game.add.bitmapText(10, 512,'minecraftia','Life:',20);
-    this.playerHealthBar = this.game.add.sprite(100, 512, this.drawRect(260,20,'#33ff00'));
+    this.playerHealthText = this.game.add.bitmapText(10, 522,'minecraftia','Life:',20);
+    this.playerHealthBar = this.game.add.sprite(100, 522, this.drawRect(260,20,'#33ff00'));
 
     //player snowballs
     this.snowballs = this.game.add.group();
@@ -323,8 +323,14 @@ Game.Play.prototype = {
         this.twitterButton.fixedToCamera = true;
       }
     }else {
-      this.waveText.fontSize = 40;
-      this.waveText.text = 'You Died...How Terrible.';
+      this.waveText.fontSize = 30;
+      this.waveText.tint = 0xff0000;
+      this.waveText.text = 'You Died.  Click to retry.';
+      if (this.game.input.activePointer.isDown){
+        this.game.state.start('Play');
+        this.music.stop();
+      }
+
     } 
 
     // // Toggle Music
