@@ -28,7 +28,7 @@ var Snowman = function(game, x, y, rank, snowballs) {
   this.body.immovable = false;
   // this.body.collideWorldBounds = true;
 
-  this.emitter = this.game.add.emitter(0, 0, 200);
+  this.emitter = this.game.add.emitter(0, 0, 50);
   this.emitter.makeParticles('snowflakes',[0,1,2,3,4]); 
   this.emitter.gravity = 1;
   this.emitter.minParticleSpeed.setTo(-200, -200);
@@ -43,9 +43,9 @@ Snowman.prototype.throwSnowball = function(player) {
   snowball.rotation = this.game.physics.arcade.moveToObject(snowball, player, 300);
 };
 Snowman.prototype.suicide = function() {
-  // Blue snowflakes plus bright yellow for a nice shade of green
   this.emitter.forEach(function(particle) {
-    particle.tint = 0xffff00;
+    // particle.tint = 0xffff00; // Blue snowflakes plus bright yellow for a nice shade of green
+    particle.tint = 0xff0000; //Red
   });
   this.emitter.x = this.x;
   this.emitter.y = this.y;
@@ -62,12 +62,12 @@ Snowman.prototype.dead = function() {
   this.kill();
   this.emitter.x = this.x;
   this.emitter.y = this.y;
-  this.emitter.start(true, 1000, null, 200);
+  this.emitter.start(true, 1000, null, 50);
 };
 Snowman.prototype.hit = function() {
-  this.emitter.x = this.x;
-  this.emitter.y = this.y;
-  this.emitter.start(true, 200, null, 20);
+  // this.emitter.x = this.x;
+  // this.emitter.y = this.y;
+  // this.emitter.start(true, 200, null, 20);
 
   //fade effect on dmg
   // var t =  this.game.add.tween(this).to({alpha: 0.3},100).to({alpha: 1},100);
