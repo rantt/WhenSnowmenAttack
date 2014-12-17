@@ -40,7 +40,16 @@ Snowman.prototype = Object.create(Phaser.Sprite.prototype);
 Snowman.prototype.throwSnowball = function(player) {
   var snowball = this.snowballs.getFirstDead();
   snowball.reset(this.x, this.y);
-  snowball.rotation = this.game.physics.arcade.moveToObject(snowball, player, 300);
+  // snowball.rotation = this.game.physics.arcade.moveToObject(snowball, player, 300); //throw at player
+  // this.game.physics.arcade.moveToXY(snowball, this.player.x+600, this.player.y,700);
+  var t = this.game.add.tween(snowball).to({angle: 720},2500);
+  t.start();
+
+  if (this.rank == 2) {
+    this.game.physics.arcade.moveToXY(snowball, 0, this.y, 300);
+  }else if (this.rank == 4) {
+    snowball.rotation = this.game.physics.arcade.moveToObject(snowball, player, 300); //throw at player
+  }
 };
 Snowman.prototype.suicide = function() {
   this.emitter.forEach(function(particle) {

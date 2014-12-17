@@ -25,8 +25,8 @@ Game.Play.prototype = {
     this.game.physics.startSystem(Phaser.ARCADE);
 
     //Initialize Steps
-    this.stepInterval = 1000;
-    // this.stepInterval = 1500;
+    // this.stepInterval = 1000;
+    this.stepInterval = 1500;
     this.nextStep = this.game.time.now + this.stepInterval;
     this.gameOver = false;
 
@@ -77,7 +77,7 @@ Game.Play.prototype = {
     this.snowballs.setAll('anchor.y', 0.5);
     this.snowballs.setAll('outOfBoundsKill', true);
     this.snowballs.setAll('checkWorldBounds', true);
-    this.snowballs.setAll('tint',0x00FFFF);
+    // this.snowballs.setAll('tint',0x00FFFF);
 
     //Snowman Snowballs
     snowmanSnowballs = this.game.add.group();
@@ -89,7 +89,7 @@ Game.Play.prototype = {
     snowmanSnowballs.setAll('outOfBoundsKill', true);
     snowmanSnowballs.setAll('checkWorldBounds', true);
     // snowmanSnowballs.setAll('tint',0xF0FFF0);
-    snowmanSnowballs.setAll('tint',0x98FB98);
+    // snowmanSnowballs.setAll('tint',0x98FB98);
 
 
     this.snowmen = this.game.add.group();
@@ -105,7 +105,7 @@ Game.Play.prototype = {
     this.waves = [];
 
     var wave1 = [  [0,0,0,0,0,0,1,0,0],
-                   [0,0,0,0,0,0,0,0,0],
+                   [2,0,0,0,0,0,0,0,0],
                    [1,0,0,0,1,0,0,0,0],
                    [0,0,1,0,0,0,0,0,0],
                    [0,0,0,0,0,0,0,0,1],
@@ -255,7 +255,11 @@ Game.Play.prototype = {
         this.player.animations.play('throw');
         var snowball = this.snowballs.getFirstExists(false);
         snowball.reset(this.player.x, this.player.y);
-        this.game.physics.arcade.moveToXY(snowball, this.player.x+600, this.player.y,700);
+        this.game.physics.arcade.moveToXY(snowball, this.player.x+600, this.player.y,500);
+
+        //Put some backspin on the snowball
+        var t = this.game.add.tween(snowball).to({angle: -540},1500);
+        t.start();
         // snowball.scale.x = 1.5;
         // snowball.scale.y = 1.5;
         this.player.throwing = true;

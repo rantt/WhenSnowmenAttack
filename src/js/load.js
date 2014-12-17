@@ -51,8 +51,8 @@ Game.Load.prototype = {
     this.game.load.spritesheet('player', 'assets/images/LD31_player.png',78,78,25);
     this.game.load.spritesheet('snowman', 'assets/images/LD31_snowman.png',96,96,25);
     this.game.load.spritesheet('snowmanBoss', 'assets/images/LD31_snowmanBoss.png',192,192,25);
-    this.game.load.spritesheet('snowball', 'assets/images/LD31_snowball.png',16, 16,25);
-    this.game.load.spritesheet('snowflakes', 'assets/images/LD31_snowflakes.png',16, 16,25);
+    this.game.load.image('snowball','assets/images/LD31_projectiles.png');
+    this.game.load.spritesheet('snowflakes', 'assets/images/LD31_flakes.png',21, 21,5);
 
     this.game.load.image('twitter','assets/images/twitter.png');
     // Sound FX
