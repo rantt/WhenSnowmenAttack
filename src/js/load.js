@@ -24,6 +24,24 @@ Game.Boot.prototype = {
 		this.game.load.image('title', 'assets/images/title.png');
     this.game.load.bitmapFont('minecraftia','assets/fonts/font.png','assets/fonts/font.xml');
 		this.game.load.image('instructions', 'assets/images/instructions.png');
+
+
+    this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+    this.game.scale.maxHeight = window.innerHeight;
+
+    if (this.game.device.desktop) {
+      this.game.scale.maxWidth = window.innerHeight*(Game.w/Game.h);
+    }else {
+      this.game.scale.maxWidth = window.innerHeight*(Game.w/Game.h);
+    }
+
+    this.game.stage.scale.pageAlignHorizontally = true;
+    this.game.stage.scale.pageAlignVeritcally = true;
+    this.game.scale.setScreenSize(true);
+
+
+
+
   },
   create: function() {
    this.game.state.start('Load');

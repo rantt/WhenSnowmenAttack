@@ -24,6 +24,24 @@ Game.Play.prototype = {
   create: function() {
     this.game.physics.startSystem(Phaser.ARCADE);
 
+
+
+
+    // this.game.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
+    this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+    this.game.scale.maxHeight = window.innerHeight;
+
+    if (this.game.device.desktop) {
+      this.game.scale.maxWidth = window.innerHeight*(Game.w/Game.h);
+    }else {
+      this.game.scale.maxWidth = window.innerHeight*(Game.w/Game.h);
+    }
+
+    this.game.stage.scale.pageAlignHorizontally = true;
+    this.game.stage.scale.pageAlignVeritcally = true;
+    this.game.scale.setScreenSize(true);
+
+
     //Initialize Steps
     // this.stepInterval = 1000;
     this.stepInterval = 1500;
