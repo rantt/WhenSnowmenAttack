@@ -24,9 +24,6 @@ Game.Play.prototype = {
   create: function() {
     this.game.physics.startSystem(Phaser.ARCADE);
 
-
-
-
     // this.game.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
     this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     this.game.scale.maxHeight = window.innerHeight;
@@ -83,8 +80,8 @@ Game.Play.prototype = {
     this.player.maxHealth = 20;
 
 
-    this.playerHealthText = this.game.add.bitmapText(10, 522,'minecraftia','Life:',20);
-    this.playerHealthBar = this.game.add.sprite(100, 522, this.drawRect(260,20,'#33ff00'));
+    this.playerHealthText = this.game.add.bitmapText(10, 16,'minecraftia','Life:',20);
+    this.playerHealthBar = this.game.add.sprite(100, 16, this.drawRect(260,20,'#33ff00'));
 
     //player snowballs
     this.snowballs = this.game.add.group();
