@@ -25,18 +25,17 @@ Game.Play.prototype = {
     this.game.physics.startSystem(Phaser.ARCADE);
 
     // this.game.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
-    this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-    this.game.scale.maxHeight = window.innerHeight;
+    // this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+    // this.game.scale.maxHeight = window.innerHeight;
 
-    if (this.game.device.desktop) {
-      this.game.scale.maxWidth = window.innerHeight*(Game.w/Game.h);
-    }else {
-      this.game.scale.maxWidth = window.innerHeight*(Game.w/Game.h);
-    }
+    // if (this.game.device.desktop) {
+    //   this.game.scale.maxWidth = window.innerHeight*(Game.w/Game.h);
+    // }else {
+    // }
 
-    this.game.stage.scale.pageAlignHorizontally = true;
-    this.game.stage.scale.pageAlignVeritcally = true;
-    this.game.scale.setScreenSize(true);
+    // this.game.stage.scale.pageAlignHorizontally = true;
+    // this.game.stage.scale.pageAlignVeritcally = true;
+    // this.game.scale.setScreenSize(true);
 
 
     //Initialize Steps
@@ -216,6 +215,25 @@ Game.Play.prototype = {
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
 
+      // this.game.scale.maxWidth = window.innerHeight*(Game.w/Game.h);
+      this.dpad = this.game.add.group();
+      this.up = this.game.add.sprite(80, Game.h-160, 'dpad',3);
+      this.dpad.add(this.up);
+
+      this.down = this.game.add.sprite(80, Game.h-60, 'dpad',0);
+      this.dpad.add(this.down);
+      //  
+      // this.toggleButton = this.game.add.sprite(Game.w-60, Game.h-40, 'dpad',3);
+      // this.dpad.add(this.toggleButton);
+
+      this.dpad.forEach(function(d) {
+        d.fixedToCamera = true;
+        d.inputEnabled = true;
+        d.anchor.setTo(0.5,0.5);
+      }, this);
+
+
+
   },
   drawRect: function(width, height,color) {
     var bmd = this.game.add.bitmapData(width, height);
@@ -247,13 +265,13 @@ Game.Play.prototype = {
     if (this.player.alive === false) {
       return;
     }
-    if (wKey.isDown || this.cursors.up.isDown) {
+    if (wKey.isDown || this.cursors.up.isDown || this.up.input.pointerDown(this.game.input.activePointer.id)) {
       if ((this.player.posUpdate === false) && (this.player.y !== this.topY)) {
         this.player.y -= 64;
         this.player.posUpdate = true;
         // console.log('player y',this.player.y);
       }
-    } else if(sKey.isDown || this.cursors.down.isDown) {
+    } else if(sKey.isDown || this.cursors.down.isDown || this.down.input.pointerDown(this.game.input.activePointer.id)) {
       if ((this.player.posUpdate === false) && (this.player.y !== this.bottomY)) {
         this.player.y += 64;
         this.player.posUpdate = true;
@@ -264,7 +282,7 @@ Game.Play.prototype = {
     }
 
     //Throw Snowball
-    if (spaceKey.isDown) {
+    if (spaceKey.isDown || this.game.input.activePointer.isDown) {
       if (this.player.throwing !== true) {
         this.throwSnd.play();
         this.player.animations.play('throw');

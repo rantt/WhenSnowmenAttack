@@ -1,5 +1,5 @@
 var tileSize = 64;
-var dRows = 10;
+var dRows = 8;
 var dCols = 12;
 
 
@@ -29,11 +29,11 @@ Game.Boot.prototype = {
     this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     this.game.scale.maxHeight = window.innerHeight;
 
-    if (this.game.device.desktop) {
+    // if (this.game.device.desktop) {
+    //   this.game.scale.maxWidth = window.innerHeight*(Game.w/Game.h);
+    // }else {
       this.game.scale.maxWidth = window.innerHeight*(Game.w/Game.h);
-    }else {
-      this.game.scale.maxWidth = window.innerHeight*(Game.w/Game.h);
-    }
+    // }
 
     this.game.stage.scale.pageAlignHorizontally = true;
     this.game.stage.scale.pageAlignVeritcally = true;
@@ -64,7 +64,8 @@ Game.Load.prototype = {
   	var preloading = this.game.add.sprite(Game.w/2-64, Game.h/2+50, 'loading');
   	this.game.load.setPreloadSprite(preloading);
 
-    this.game.load.tilemap('woods', 'assets/maps/woods.json', null, Phaser.Tilemap.TILED_JSON);
+    // this.game.load.tilemap('woods', 'assets/maps/woods.json', null, Phaser.Tilemap.TILED_JSON);
+    this.game.load.tilemap('woods', 'assets/maps/woods2.json', null, Phaser.Tilemap.TILED_JSON);
     this.game.load.spritesheet('woods', 'assets/images/LD31_woods.png', tileSize, tileSize, 25);
     this.game.load.spritesheet('player', 'assets/images/LD31_player.png',78,78,25);
     this.game.load.spritesheet('snowman', 'assets/images/LD31_snowman.png',96,96,25);
@@ -73,6 +74,8 @@ Game.Load.prototype = {
     this.game.load.spritesheet('snowflakes', 'assets/images/LD31_flakes.png',21, 21,5);
 
     this.game.load.image('twitter','assets/images/twitter.png');
+    this.game.load.atlasXML('dpad','assets/images/dpad_sheet.png','assets/atlas/dpad_sheet.xml');
+
     // Sound FX
     this.game.load.audio('hit', 'assets/audio/hit.wav');
     this.game.load.audio('dead', 'assets/audio/dead.wav');
