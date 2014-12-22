@@ -12,6 +12,7 @@ var Snowman = function(game, x, y, rank, snowballs) {
   }else if (this.rank === 2) {
     Phaser.Sprite.call(this, this.game, x, y, 'snowman',2);
     this.animations.add('walk', [3,4,2], 3);
+    this.animations.add('die',[13,14,15,16,17,18,19],12);
     this.health = 3;
   }else if (this.rank === 3) {
     Phaser.Sprite.call(this, this.game, x, y, 'snowmanBoss',2);
@@ -71,7 +72,7 @@ Snowman.prototype.dead = function() {
   // });
   this.dying = true; 
   this.alive = false;
-  if (this.rank === 1) {
+  if ((this.rank === 1) || (this.rank === 2)) {
     this.animations.play('die',12,false,true);
     // this.animations.onAnimationComplete.add(function() {
     //   this.destroy();
@@ -82,7 +83,7 @@ Snowman.prototype.dead = function() {
     this.destroy();
     this.emitter.x = this.x;
     this.emitter.y = this.y;
-    this.emitter.start(true, 500, null, 25);
+    this.emitter.start(true, 500, null, 50);
   }
   // this.kill();
 };
