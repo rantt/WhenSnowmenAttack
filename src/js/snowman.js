@@ -2,10 +2,12 @@ var Snowman = function(game, x, y, rank, snowballs) {
   this.game = game;
   this.rank = rank;
   this.snowballs = snowballs;
+  this.dying = false;
 
   if (this.rank === 1) {
     Phaser.Sprite.call(this, this.game, x, y, 'snowman');
     this.animations.add('walk', [1,0], 3);
+    this.animations.add('die',[6,7,8,9,10,11,12],12);
     this.health = 3;
   }else if (this.rank === 2) {
     Phaser.Sprite.call(this, this.game, x, y, 'snowman',2);
@@ -58,7 +60,7 @@ Snowman.prototype.suicide = function() {
   });
   this.emitter.x = this.x;
   this.emitter.y = this.y;
-  this.emitter.start(true, 1000, null, 200);
+  this.emitter.start(true, 1000, null, 50);
   this.animations.stop();
   this.kill();
 };
@@ -67,11 +69,22 @@ Snowman.prototype.dead = function() {
   // this.emitter.forEach(function(particle) {
   //   particle.tint = 0xffff00;
   // });
-  this.animations.stop();
-  this.kill();
-  this.emitter.x = this.x;
-  this.emitter.y = this.y;
-  this.emitter.start(true, 1000, null, 50);
+  this.dying = true; 
+  this.alive = false;
+  if (this.rank === 1) {
+    this.animations.play('die',12,false,true);
+    // this.animations.onAnimationComplete.add(function() {
+    //   this.destroy();
+    // },this);
+    // this.destroy();
+  }else {
+    this.animations.stop();
+    this.destroy();
+    this.emitter.x = this.x;
+    this.emitter.y = this.y;
+    this.emitter.start(true, 500, null, 25);
+  }
+  // this.kill();
 };
 Snowman.prototype.hit = function() {
   // this.emitter.x = this.x;

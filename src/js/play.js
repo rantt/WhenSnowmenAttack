@@ -246,9 +246,11 @@ Game.Play.prototype = {
   snowballHitSnowman: function(snowman,snowball) {
 
     snowball.kill();
-    snowman.damage(1);
+    // snowman.damage(1);
+    snowman.health -= 1;;
 
-    if (snowman.alive === false) {
+    // if (snowman.alive === false) {
+    if ((snowman.health <= 0) && (snowman.dying === false)) {
       this.snowmanCount -= 1;
       this.deadSnd.play();
       snowman.dead();
@@ -325,7 +327,7 @@ Game.Play.prototype = {
         this.snowmen.forEach(function(s) {
           if ((this.game.time.now - this.nextStep) > 0) {
             // this.game.physics.arcade.overlap(s.snowballs, this.player, this.playerHit(2), null, this);
-            if (s.alive === true) {
+            if ((s.alive === true) && (s.dying === false)) {
               //Move to player unless you're dead, in that case you can sit this one out :p
               this.snowmanMoves(s);
             }
@@ -429,6 +431,9 @@ Game.Play.prototype = {
       snowman.kill();
       return;
     }
+    // if (snowman.dying === true) {
+    //   return;
+    // }
 
     // console.log('snowman xpos',snowman.x);
     // console.log('type',snowman.rank);
