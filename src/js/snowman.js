@@ -23,7 +23,6 @@ var Snowman = function(game, x, y, rank, snowballs) {
     this.animations.add('walk', [3,4,2], 3);
     this.health = 20;
   }
-  console.log('rank',this.rank);
 
   this.anchor.setTo(0.5, 0.5);
 
@@ -31,7 +30,7 @@ var Snowman = function(game, x, y, rank, snowballs) {
   this.body.immovable = false;
   // this.body.collideWorldBounds = true;
 
-  this.emitter = this.game.add.emitter(0, 0, 50);
+  this.emitter = this.game.add.emitter(0, 0, 100);
   this.emitter.makeParticles('snowflakes',[0,1,2,3,4]); 
   this.emitter.gravity = 1;
   this.emitter.minParticleSpeed.setTo(-200, -200);
@@ -74,18 +73,13 @@ Snowman.prototype.dead = function() {
   this.alive = false;
   if ((this.rank === 1) || (this.rank === 2)) {
     this.animations.play('die',12,false,true);
-    // this.animations.onAnimationComplete.add(function() {
-    //   this.destroy();
-    // },this);
-    // this.destroy();
   }else {
     this.animations.stop();
-    this.destroy();
+    this.kill();
     this.emitter.x = this.x;
     this.emitter.y = this.y;
-    this.emitter.start(true, 500, null, 50);
+    this.emitter.start(true, 1000, null, 100);
   }
-  // this.kill();
 };
 Snowman.prototype.hit = function() {
   // this.emitter.x = this.x;
@@ -99,5 +93,56 @@ Snowman.prototype.hit = function() {
   var t =  this.game.add.tween(this).to({tint: 0xff0000},100).to({tint: 0xffffff},100);
   t.start();
 };
+Snowman.prototype.reset = function(x, y, rank) {
 
+    if (typeof rank === 'undefined') { rank = 1; }
+
+    this.world.setTo(x, y);
+    this.position.x = x;
+    this.position.y = y;
+    this.alive = true;
+    this.exists = true;
+    this.visible = true;
+    this.renderable = true;
+    this._outOfBoundsFired = false;
+
+    // this.health = health;
+    this.rank = rank;
+    this.dying = false;
+
+    if (this.rank === 1) {
+      // Phaser.Sprite.call(this, this.game, x, y, 'snowman');
+      this.loadTexture('snowman',0)
+      this.animations.add('walk', [1,0], 3);
+      this.animations.add('die',[6,7,8,9,10,11,12],12);
+      this.health = 3;
+    }else if (this.rank === 2) {
+      // Phaser.Sprite.call(this, this.game, x, y, 'snowman',2);
+      this.loadTexture('snowman',2)
+      this.animations.add('walk', [3,4,2], 3);
+      this.animations.add('die',[13,14,15,16,17,18,19],12);
+      this.health = 3;
+    }else if (this.rank === 3) {
+      // Phaser.Sprite.call(this, this.game, x, y, 'snowmanBoss',2);
+      this.loadTexture('snowmanBoss',0)
+      this.animations.add('walk', [1,0], 3);
+      this.health = 20;
+    }else if (this.rank === 4) {
+      // Phaser.Sprite.call(this, this.game, x, y, 'snowmanBoss',2);
+      this.loadTexture('snowmanBoss',2)
+      this.animations.add('walk', [3,4,2], 3);
+      this.health = 20;
+    }
+
+
+    if (this.body)
+    {
+        this.body.reset(x, y, false, false);
+    }
+
+    this._cache[4] = 1;
+
+    return this;
+
+};
 Snowman.prototype.constructor = Snowman;

@@ -97,7 +97,7 @@ Game.Play.prototype = {
     snowmanSnowballs = this.game.add.group();
     snowmanSnowballs.enableBody = true;
     snowmanSnowballs.physicsBodyType = Phaser.Physics.ARCADE;
-    snowmanSnowballs.createMultiple(100, 'snowball');
+    snowmanSnowballs.createMultiple(30, 'snowball');
     snowmanSnowballs.setAll('anchor.x', 0.5);
     snowmanSnowballs.setAll('anchor.y', 0.5);
     snowmanSnowballs.setAll('outOfBoundsKill', true);
@@ -107,7 +107,7 @@ Game.Play.prototype = {
 
 
     this.snowmen = this.game.add.group();
-
+    // this.snowmen.createMultiple(30, new Snowman(this.game,0,0,1,snowmanSnowballs));
     this.wavePosition = 0;
     this.waveCount = 0;
     this.waveTimer = this.game.time.now + 3000;
@@ -119,7 +119,7 @@ Game.Play.prototype = {
     this.waves = [];
 
     var wave1 = [  [0,0,0,0,0,0,1,0,0],
-                   [2,0,0,0,0,0,0,0,0],
+                   [4,0,0,0,0,0,0,0,0],
                    [1,0,0,0,1,0,0,0,0],
                    [0,0,1,0,0,0,0,0,0],
                    [0,0,0,0,0,0,0,0,1],
@@ -413,7 +413,21 @@ Game.Play.prototype = {
         // 800 Just Off Screen
         // this.snowmen.add(new Snowman(this.game, 736, (64*j)+128) ); 
         // console.log('iam a',wave[j][this.wavePosition],this.wavePosition);
-        this.snowmen.add(new Snowman(this.game, 800, (64*j)+this.topY, wave[j][this.wavePosition], snowmanSnowballs )); 
+        // this.snowmen.add(new Snowman(this.game, 800, (64*j)+this.topY, wave[j][this.wavePosition], snowmanSnowballs )); 
+        //var snowball = this.snowballs.getFirstExists(false);
+        //snowball.reset(this.player.x, this.player.y);
+        // console.log('snowman'+this.snowmen.getFirstExists(false));
+        if (this.snowmen.getFirstExists(false) === null) {
+          this.snowmen.add(new Snowman(this.game, 800, (64*j)+this.topY, wave[j][this.wavePosition], snowmanSnowballs ));
+        }else {
+          var snowman = this.snowmen.getFirstExists(false);  
+          // console.log('rank'+wave[j][this.wavePosition]);
+          snowman.reset(800,(64*j)+this.topY, wave[j][this.wavePosition]);
+
+          // console.log(snowman);
+       } 
+
+        // snowman.reset(800, (64*j)+this.topY);
         this.snowmanCount += 1;
       }
       // console.log(line);
