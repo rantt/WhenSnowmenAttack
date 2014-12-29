@@ -47,9 +47,9 @@ Snowman.prototype.throwSnowball = function(player) {
   var t = this.game.add.tween(snowball).to({angle: 720},2500);
   t.start();
 
-  if (this.rank == 2) {
+  if (this.rank === 2) {
     this.game.physics.arcade.moveToXY(snowball, 0, this.y, 300);
-  }else if (this.rank == 4) {
+  }else if (this.rank === 4) {
     snowball.rotation = this.game.physics.arcade.moveToObject(snowball, player, 300); //throw at player
   }
 };
@@ -112,24 +112,24 @@ Snowman.prototype.reset = function(x, y, rank) {
 
     if (this.rank === 1) {
       // Phaser.Sprite.call(this, this.game, x, y, 'snowman');
-      this.loadTexture('snowman',0)
+      this.loadTexture('snowman',0);
       this.animations.add('walk', [1,0], 3);
       this.animations.add('die',[6,7,8,9,10,11,12],12);
       this.health = 3;
     }else if (this.rank === 2) {
       // Phaser.Sprite.call(this, this.game, x, y, 'snowman',2);
-      this.loadTexture('snowman',2)
+      this.loadTexture('snowman',2);
       this.animations.add('walk', [3,4,2], 3);
       this.animations.add('die',[13,14,15,16,17,18,19],12);
       this.health = 3;
     }else if (this.rank === 3) {
       // Phaser.Sprite.call(this, this.game, x, y, 'snowmanBoss',2);
-      this.loadTexture('snowmanBoss',0)
+      this.loadTexture('snowmanBoss',0);
       this.animations.add('walk', [1,0], 3);
       this.health = 20;
     }else if (this.rank === 4) {
       // Phaser.Sprite.call(this, this.game, x, y, 'snowmanBoss',2);
-      this.loadTexture('snowmanBoss',2)
+      this.loadTexture('snowmanBoss',2);
       this.animations.add('walk', [3,4,2], 3);
       this.health = 20;
     }

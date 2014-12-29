@@ -6,12 +6,9 @@
  * Using Math.round() will give you a non-uniform distribution!
  */
 
-// var musicOn = true;
 
 var wKey;
 var sKey;
-// var aKey;
-// var dKey;
 var spaceKey;
 var snowmanSnowballs;
 
@@ -247,7 +244,7 @@ Game.Play.prototype = {
 
     snowball.kill();
     // snowman.damage(1);
-    snowman.health -= 1;;
+    snowman.health -= 1;
 
     // if (snowman.alive === false) {
     if ((snowman.health <= 0) && (snowman.dying === false)) {
@@ -406,7 +403,6 @@ Game.Play.prototype = {
       }
     }
     for(var j=0;j < 5;j++) {
-      var line = '';
       this.line += String(wave[j][this.wavePosition]);
       if (wave[j][this.wavePosition] !== 0) {
         // 736 last block
@@ -471,11 +467,12 @@ Game.Play.prototype = {
 
   },
   playerHit: function(dmg) {
+    var t;
     this.player.health -= dmg;
     if (this.player.health > 0) {
       this.playerHitSnd.play();
       this.playerHealthBar.scale.x = this.player.health/this.player.maxHealth;
-      var t =  this.game.add.tween(this.player).to({alpha: 0.3},100).to({alpha: 1},100);
+      t =  this.game.add.tween(this.player).to({alpha: 0.3},100).to({alpha: 1},100);
       t.start();
     }else {
       this.playerDeadSnd.play();
@@ -483,7 +480,7 @@ Game.Play.prototype = {
       this.player.animations.stop();
       this.player.frame = 4;
       this.player.alive = false;
-      var t = this.game.add.tween(this.player).to({alpha: 0}, 3000);
+      t = this.game.add.tween(this.player).to({alpha: 0}, 3000);
       t.start();
       t.onComplete.add(function() {
         this.player.kill();
