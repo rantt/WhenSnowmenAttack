@@ -26,9 +26,9 @@ module.exports = (grunt) ->
         files: [
           expand: true
           flatten: false
-          cwd: '<%= SRC_DIR %>/assets/atlas/'
+          cwd: '<%= SRC_DIR %>/assets/maps/'
           src: ['**']
-          dest: '<%= DST_DIR %>/assets/atlas/'
+          dest: '<%= DST_DIR %>/assets/maps/'
         ]
       font:
         files: [
