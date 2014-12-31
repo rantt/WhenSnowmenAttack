@@ -72,12 +72,12 @@ Game.Play.prototype = {
     this.game.physics.enable(this.player, Phaser.Physics.ARCADE);
     this.player.animations.play('walk');
     this.player.throwing = false;
-    this.player.health = 20;
-    this.player.maxHealth = 20;
+    this.player.health = 10;
+    this.player.maxHealth = 10;
 
-
-    this.playerHealthText = this.game.add.bitmapText(10, 16,'minecraftia','Life:',20);
-    this.playerHealthBar = this.game.add.sprite(100, 16, this.drawRect(260,20,'#33ff00'));
+   
+    // this.playerHealthText = this.game.add.bitmapText(10, 16,'minecraftia','Life:',20);
+    // this.playerHealthBar = this.game.add.sprite(100, 16, this.drawRect(260,20,'#33ff00'));
 
     //player snowballs
     this.snowballs = this.game.add.group();
@@ -116,7 +116,7 @@ Game.Play.prototype = {
     this.waves = [];
 
     var wave1 = [  [0,0,0,0,0,0,1,0,0],
-                   [4,0,0,0,0,0,0,0,0],
+                   [0,0,0,0,0,0,0,0,0],
                    [1,0,0,0,1,0,0,0,0],
                    [0,0,1,0,0,0,0,0,0],
                    [0,0,0,0,0,0,0,0,1],
@@ -229,7 +229,15 @@ Game.Play.prototype = {
         d.anchor.setTo(0.5,0.5);
       }, this);
 
+    this.hearts = this.game.add.group();
+    this.hearts.setAll('anchor.x', 0.5);
+    this.hearts.setAll('anchor.y', 0.5);
+    this.hearts.createMultiple(10, 'heart', 0, false);
+    this.updateHealthBar(this.player.health);
+    // this.game.add.sprite(32,32,'heart');
 
+
+ 
 
   },
   drawRect: function(width, height,color) {
@@ -471,12 +479,15 @@ Game.Play.prototype = {
     this.player.health -= dmg;
     if (this.player.health > 0) {
       this.playerHitSnd.play();
-      this.playerHealthBar.scale.x = this.player.health/this.player.maxHealth;
+      this.updateHealthBar(this.player.health); 
+      // this.playerHealthBar.scale.x = this.player.health/this.player.maxHealth;
+
       t =  this.game.add.tween(this.player).to({alpha: 0.3},100).to({alpha: 1},100);
       t.start();
     }else {
       this.playerDeadSnd.play();
-      this.playerHealthBar.scale.x = 0;
+      // this.playerHealthBar.scale.x = 0;
+      this.updateHealthBar(0);
       this.player.animations.stop();
       this.player.frame = 4;
       this.player.alive = false;
@@ -488,9 +499,23 @@ Game.Play.prototype = {
       }, this);
     }
   },
+  updateHealthBar: function(health) {
+    var xpos = 32;
+    for (var i = 0;i < this.player.maxHealth;i++) {
+      var heart = this.game.add.sprite(xpos,26,'heart');
+      heart.anchor.setTo(0.5,0.5);
+      console.log(heart);
+      if (i <  this.player.health) {
+        heart.frame = 0;
+      }else {
+        heart.frame = 2;
+      }
+      xpos += 36;
+    }
+  },
   snowballHitPlayer: function(player, snowball) {
     snowball.kill();
-    this.playerHit(2);
+    this.playerHit(1);
   },
   // toggleMute: function() {
   //   if (musicOn == true) {
