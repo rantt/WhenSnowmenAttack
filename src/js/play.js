@@ -116,7 +116,7 @@ Game.Play.prototype = {
     this.waves = [];
 
     var wave1 = [  [0,0,0,0,0,0,1,0,0],
-                   [0,0,0,0,0,0,0,0,0],
+                   [2,0,0,0,0,0,0,0,0],
                    [1,0,0,0,1,0,0,0,0],
                    [0,0,1,0,0,0,0,0,0],
                    [0,0,0,0,0,0,0,0,1],
@@ -229,15 +229,8 @@ Game.Play.prototype = {
         d.anchor.setTo(0.5,0.5);
       }, this);
 
-    this.hearts = this.game.add.group();
-    this.hearts.setAll('anchor.x', 0.5);
-    this.hearts.setAll('anchor.y', 0.5);
-    this.hearts.createMultiple(10, 'heart', 0, false);
-    this.updateHealthBar(this.player.health);
-    // this.game.add.sprite(32,32,'heart');
-
-
- 
+    this.hearts = [];
+    this.initHealthBar();
 
   },
   drawRect: function(width, height,color) {
@@ -499,18 +492,24 @@ Game.Play.prototype = {
       }, this);
     }
   },
-  updateHealthBar: function(health) {
+  initHealthBar: function() {
     var xpos = 32;
     for (var i = 0;i < this.player.maxHealth;i++) {
       var heart = this.game.add.sprite(xpos,26,'heart');
       heart.anchor.setTo(0.5,0.5);
+      heart.frame = 0;
+      this.hearts.push(heart);
       console.log(heart);
-      if (i <  this.player.health) {
-        heart.frame = 0;
-      }else {
-        heart.frame = 2;
-      }
       xpos += 36;
+    }
+  },
+  updateHealthBar: function() {
+    for (var i = 0;i < this.hearts.length;i++) {
+      if (i < this.player.health) {
+        this.hearts[i].frame = 0;
+      }else {
+        this.hearts[i].frame = 2;
+      }
     }
   },
   snowballHitPlayer: function(player, snowball) {
