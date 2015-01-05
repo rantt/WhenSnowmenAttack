@@ -8,6 +8,13 @@ var Game = {
   h: tileSize*dRows,
 };
 
+if (localStorage.getItem('levelUnlocked') === null) {
+  localStorage.setItem('levelUnlocked', 0);
+}
+
+if (localStorage.getItem('waveCount') === null) {
+  localStorage.setItem('waveCount', 0);
+}
 // var w = 800;
 // var h = 600;
 
@@ -26,14 +33,10 @@ Game.Boot.prototype = {
 		this.game.load.image('instructions', 'assets/images/instructions.png');
 
 
+    //Automatically Scale to fit available screen
     this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     this.game.scale.maxHeight = window.innerHeight;
-
-    // if (this.game.device.desktop) {
-    //   this.game.scale.maxWidth = window.innerHeight*(Game.w/Game.h);
-    // }else {
-      this.game.scale.maxWidth = window.innerHeight*(Game.w/Game.h);
-    // }
+    this.game.scale.maxWidth = window.innerHeight*(Game.w/Game.h);
 
     this.game.stage.scale.pageAlignHorizontally = true;
     this.game.stage.scale.pageAlignVeritcally = true;
@@ -73,6 +76,7 @@ Game.Load.prototype = {
     this.game.load.image('snowball','assets/images/LD31_projectiles.png');
     this.game.load.spritesheet('snowflakes', 'assets/images/LD31_flakes.png',21, 21,5);
     this.game.load.spritesheet('heart','assets/images/LD31_heart.png',32,32,5);
+    this.game.load.spritesheet('levelBadge', 'assets/images/levels.png', 48, 48, 2);
 
     this.game.load.image('twitter','assets/images/twitter.png');
     this.game.load.atlasXML('dpad','assets/images/dpad_sheet.png','assets/atlas/dpad_sheet.xml');

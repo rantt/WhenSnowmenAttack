@@ -20,6 +20,8 @@ Game.Play = function(game) {
 Game.Play.prototype = {
   create: function() {
     this.game.physics.startSystem(Phaser.ARCADE);
+    this.levelUnlocked = JSON.parse(localStorage.getItem('levelUnlocked'));
+    this.waveCount = JSON.parse(localStorage.getItem('waveCount'));
 
     // this.game.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
     // this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -106,7 +108,7 @@ Game.Play.prototype = {
     this.snowmen = this.game.add.group();
     // this.snowmen.createMultiple(30, new Snowman(this.game,0,0,1,snowmanSnowballs));
     this.wavePosition = 0;
-    this.waveCount = 0;
+    // this.waveCount = 0;
     this.waveTimer = this.game.time.now + 3000;
     this.waveText = this.game.add.bitmapText(Game.w/2-140, Game.h/2,'minecraftia', '', 30);
     this.snowmanCount = 0;
@@ -393,6 +395,13 @@ Game.Play.prototype = {
   loadNextWave: function() {
     // Exit if we've reached the end of the wave
     var wave = this.waves[this.waveCount];
+
+
+    //Save Highest Level
+    if (this.waveCount > this.levelUnlocked) {
+      localStorage.setItem('levelUnlocked', this.waveCount);
+    }
+
     if (this.wavePosition === (wave[0].length)){
       if (this.waves[this.waveCount+1] !== undefined) {
         this.ready = true;
