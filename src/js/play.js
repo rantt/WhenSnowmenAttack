@@ -20,22 +20,10 @@ Game.Play = function(game) {
 Game.Play.prototype = {
   create: function() {
     this.game.physics.startSystem(Phaser.ARCADE);
+
+    //Load LocalStorage Variables
     this.levelUnlocked = JSON.parse(localStorage.getItem('levelUnlocked'));
     this.waveCount = JSON.parse(localStorage.getItem('waveCount'));
-
-    // this.game.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
-    // this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-    // this.game.scale.maxHeight = window.innerHeight;
-
-    // if (this.game.device.desktop) {
-    //   this.game.scale.maxWidth = window.innerHeight*(Game.w/Game.h);
-    // }else {
-    // }
-
-    // this.game.stage.scale.pageAlignHorizontally = true;
-    // this.game.stage.scale.pageAlignVeritcally = true;
-    // this.game.scale.setScreenSize(true);
-
 
     //Initialize Steps
     // this.stepInterval = 1000;
@@ -80,6 +68,8 @@ Game.Play.prototype = {
    
     // this.playerHealthText = this.game.add.bitmapText(10, 16,'minecraftia','Life:',20);
     // this.playerHealthBar = this.game.add.sprite(100, 16, this.drawRect(260,20,'#33ff00'));
+    //
+    this.levelText = this.game.add.bitmapText(Game.w - 120, 16, 'minecraftia', 'Level: '+String(this.waveCount + 1), 20); 
 
     //player snowballs
     this.snowballs = this.game.add.group();
@@ -314,6 +304,7 @@ Game.Play.prototype = {
       if ((this.waveTimer - this.game.time.now) > 0) {
         this.waveText.tint = 0xffff00;
         this.waveText.text = 'Incoming: Wave '+(this.waveCount + 1);
+        this.levelText.text = 'Level: '+String(this.waveCount + 1); 
       }else {
         this.waveText.text = '';
       }

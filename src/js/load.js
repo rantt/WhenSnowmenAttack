@@ -9,14 +9,12 @@ var Game = {
 };
 
 if (localStorage.getItem('levelUnlocked') === null) {
-  localStorage.setItem('levelUnlocked', 0);
+  localStorage.setItem('levelUnlocked', 3);
 }
 
 if (localStorage.getItem('waveCount') === null) {
   localStorage.setItem('waveCount', 0);
 }
-// var w = 800;
-// var h = 600;
 
 Game.Boot = function(game) {
   this.game = game;
@@ -41,9 +39,6 @@ Game.Boot.prototype = {
     this.game.stage.scale.pageAlignHorizontally = true;
     this.game.stage.scale.pageAlignVeritcally = true;
     this.game.scale.setScreenSize(true);
-
-
-
 
   },
   create: function() {
